@@ -1,6 +1,7 @@
 import { baseApi } from "../baseApi";
 
 const authApiSlice = baseApi.injectEndpoints({
+	overrideExisting:true,
 	endpoints: (builder) => ({
 		jwtCreate: builder.mutation({
 			query: ({ email, password }) => ({
@@ -13,7 +14,7 @@ const authApiSlice = baseApi.injectEndpoints({
 			query: ({ token }) => ({
 				url: "/jwt/verify/",
 				method: "POST",
-                body:{ token }
+				body: { token },
 			}),
 		}),
 	}),
