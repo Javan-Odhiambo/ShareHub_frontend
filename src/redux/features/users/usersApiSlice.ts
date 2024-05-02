@@ -8,11 +8,11 @@ const usersApiSlice = baseApi.injectEndpoints({
 				first_name,
 				last_name,
 				password,
-				re_passowrd,
+				re_password,
 			}) => ({
 				url: "/users/",
 				method: "POST",
-				body: { email, first_name, last_name, password, re_passowrd },
+				body: { email, first_name, last_name, password, re_password },
 			}),
 		}),
 
