@@ -1,6 +1,6 @@
 import { createApi , fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl: string = "https://localhost:8000"
+const baseUrl: string = "http://localhost:8000"
 
 import type {
 	BaseQueryFn,

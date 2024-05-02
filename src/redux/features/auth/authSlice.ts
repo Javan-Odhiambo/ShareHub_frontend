@@ -1,15 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 // Todo confirm handling of localstorage!!
-interface authSlice {
-	isAuthenticated: boolean;
-    accessToken: string;
-    refreshToken: string;
-}
 
-const initialState : authSlice = {
+const initialState = {
+	accessToken:
+		typeof window !== "undefined"
+			? window.localStorage.getItem("accessToken")
+			: false,
+	refreshToken:
+		typeof window !== "undefined"
+			? window.localStorage.getItem("refreshToken")
+			: false,
 	isAuthenticated: false,
-    accessToken: localStorage.getItem('accessToken') || "",
-    refreshToken: localStorage.getItem('refreshToken') || "",
 };
 
 const authSlice = createSlice({
