@@ -30,7 +30,9 @@ const ActivationPage = (params: Params) => {
 	return (
 		<div>
 			{/*// todo implement spinner */}
-            <h1>Kindly wait as we activate your account..</h1>
+			<h1 className="text-xl font-semibold text-center mt-32">
+				Kindly wait as we activate your account...
+			</h1>
 		</div>
 	);
 };
