@@ -1,6 +1,7 @@
 import { baseApi } from "../baseApi";
 
 const usersApiSlice = baseApi.injectEndpoints({
+	overrideExisting:true,
 	endpoints: (builder) => ({
 		users: builder.mutation({
 			query: ({

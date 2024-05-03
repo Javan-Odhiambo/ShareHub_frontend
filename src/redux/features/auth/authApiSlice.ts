@@ -1,6 +1,7 @@
 import { baseApi } from "../baseApi";
 
 const authApiSlice = baseApi.injectEndpoints({
+	overrideExisting:true,
 	endpoints: (builder) => ({
 		jwtCreate: builder.mutation({
 			query: ({ email, password }) => ({
