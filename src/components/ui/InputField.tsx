@@ -1,6 +1,9 @@
 import { cn } from '@/lib/utils';
 import React from 'react';
 import { FieldError } from 'react-hook-form';
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
 
 type InputFieldProps = {
     label?: string;
@@ -19,12 +22,10 @@ const InputField: React.FC<InputFieldProps> = ({ label, id, register, error }) =
     )
 
     return (
-        <div className="w-full flex gap-3">
-            {label && <label htmlFor={id}>{label}:</label>}
-            <div className='flex flex-col'>
-                <input className={inputClassName} id={id} {...register} />
-                {error && <div className="text-red-500 text-sm" >{error.message}</div>}
-            </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+            {label && <Label htmlFor={id}>{label}:</Label>}
+            <Input type="email" id="email" placeholder="Email" />
+            {error && <div className="text-red-500 text-sm" >{error.message}</div>}
         </div>
     );
 };

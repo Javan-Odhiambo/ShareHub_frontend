@@ -1,92 +1,161 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+  @tailwind components;
+  @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-  
-  --primary-1: 48deg 20% 95%;
-  --primary-2: 46deg 72% 92%;
-  --primary-3: 48deg 100% 81%;
-  --primary-4: 48deg 100% 71%;
-  --primary-5: 49deg 100% 56%;
-  --primary-6: 48deg 88% 55%;
-  --primary-7: 48deg 74% 50%;
-  --primary-8: 49deg 100% 39%;
-  --primary-9: 49deg 100% 48%;
-  --primary-10: 49deg 100% 46%
-  --primary-11: 47deg 100% 26%;
-  --primary-12: 47deg 56% 18%;
+  @layer base {
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
 
-  --secondary-1: 39.1deg 24% 97.1%;
-  --secondary-2: 36deg 14.3% 94.7%;
-  --secondary-3: 35.1deg 25.5% 87.6%;
-  --secondary-4: 33.2deg 28.4% 83.3%;
-  --secondary-5: 31.4deg 25.3% 83.1%;
-  --secondary-6: 29.7deg 26.2% 75.7%;
-  --secondary-7: 29.3deg 27.7% 69.2%;
-  --secondary-8: 29.5deg 28.9% 58.4%;
-  --secondary-9: 29.1deg 26.1% 35.5%;
-  --secondary-10: 28.5deg 26.8% 30.2%;
-  --secondary-11: 28.2deg 26.3% 28.6%;
-  --secondary-12: 28.1deg 18.2% 21.2%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
 
-  --tertiary-1: 196.4deg 14.3% 91.8%;
-  --tertiary-2: 196.4deg 20.2% 88.4%;
-  --tertiary-3: 196.4deg 29.6% 84.5%;
-  --tertiary-4: 196.4deg 27.9% 80%;
-  --tertiary-5: 196.4deg 32.1% 76.5%;
-  --tertiary-6: 196.4deg 35.8% 69.8%;
-  --tertiary-7: 196.4deg 35.8% 56.1%;
-  --tertiary-8: 196.4deg 37.6% 34.5%;
-  --tertiary-9: 196.4deg 100% 28.4%;
-  --tertiary-10: 196.4deg 100% 25.7%;
-  --tertiary-11: 196.4deg 100% 24.1%;
-  --tertiary-12: 196.4deg 48.2% 19.2%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
 
-  --error-color: 1.2deg 76.3% 50.6%;
-  --on-error-color: 351.3deg 100% 92.2%;
-  --error-container: 0deg 80% 43.9%;
-  --on-error-conatainer: 0deg 100% 89%;
+      --primary: 222.2 47.4% 11.2%;
+      --primary-foreground: 210 40% 98%;
 
-  --success-color: 120deg 55.2% 43.1%;
-  --on-success-color: 120deg 100% 88.2%;
-  --success-container: 120deg 45.9% 32.4%;
-  --on-success-conatainer: 120deg 54.1% 77.8%;
-  
-}
+      --secondary: 210 40% 96.1%;
+      --secondary-foreground: 222.2 47.4% 11.2%;
 
-.dark {
-  --primary-1:43deg 16% 9%;
-  --primary-2: 44deg 21% 10%;
-  --primary-3: 46deg 48% 12%;
-  --primary-4: 47deg 93% 12%;
-  --primary-5: 48deg 97% 14%;
-  --primary-6: 47deg 60% 20%;
-  --primary-7: 46deg 47% 27%;
-  --primary-8: 46deg 45% 34%;
-  --primary-9: 47deg 81% 56%;
-  --primary-10: 48deg 75% 51%;
-  --primary-11: 47deg 91% 64%;
-  --primary-12: 46deg 81% 85%;
+      --muted: 210 40% 96.1%;
+      --muted-foreground: 215.4 16.3% 46.9%;
 
-}
-/* .blue {
-  --primary-1:6.8deg 81.6% 61.6%;
-} */
+      --accent: 210 40% 96.1%;
+      --accent-foreground: 222.2 47.4% 11.2%;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 222.2 84% 4.9%;
+
+      --radius: 0.5rem;
+    }
+
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
+
+      --popover: 222.2 84% 4.9%;
+      --popover-foreground: 210 40% 98%;
+
+      --primary: 210 40% 98%;
+      --primary-foreground: 222.2 47.4% 11.2%;
+
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
+
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
+
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
+
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 212.7 26.8% 83.9%;
+    }
   }
-}
 
-* {
-  padding: 0;
-  margin: 0;
-}
+  @layer base {
+    * {
+      @apply border-border;
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      @apply bg-background text-foreground;
+    }
+  }
 
+  /* :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+    
+    --primary-1: 48deg 20% 95%;
+    --primary-2: 46deg 72% 92%;
+    --primary-3: 48deg 100% 81%;
+    --primary-4: 48deg 100% 71%;
+    --primary-5: 49deg 100% 56%;
+    --primary-6: 48deg 88% 55%;
+    --primary-7: 48deg 74% 50%;
+    --primary-8: 49deg 100% 39%;
+    --primary-9: 49deg 100% 48%;
+    --primary-10: 49deg 100% 46%
+    --primary-11: 47deg 100% 26%;
+    --primary-12: 47deg 56% 18%;
+  
+    --secondary-1: 39.1deg 24% 97.1%;
+    --secondary-2: 36deg 14.3% 94.7%;
+    --secondary-3: 35.1deg 25.5% 87.6%;
+    --secondary-4: 33.2deg 28.4% 83.3%;
+    --secondary-5: 31.4deg 25.3% 83.1%;
+    --secondary-6: 29.7deg 26.2% 75.7%;
+    --secondary-7: 29.3deg 27.7% 69.2%;
+    --secondary-8: 29.5deg 28.9% 58.4%;
+    --secondary-9: 29.1deg 26.1% 35.5%;
+    --secondary-10: 28.5deg 26.8% 30.2%;
+    --secondary-11: 28.2deg 26.3% 28.6%;
+    --secondary-12: 28.1deg 18.2% 21.2%;
+  
+    --tertiary-1: 196.4deg 14.3% 91.8%;
+    --tertiary-2: 196.4deg 20.2% 88.4%;
+    --tertiary-3: 196.4deg 29.6% 84.5%;
+    --tertiary-4: 196.4deg 27.9% 80%;
+    --tertiary-5: 196.4deg 32.1% 76.5%;
+    --tertiary-6: 196.4deg 35.8% 69.8%;
+    --tertiary-7: 196.4deg 35.8% 56.1%;
+    --tertiary-8: 196.4deg 37.6% 34.5%;
+    --tertiary-9: 196.4deg 100% 28.4%;
+    --tertiary-10: 196.4deg 100% 25.7%;
+    --tertiary-11: 196.4deg 100% 24.1%;
+    --tertiary-12: 196.4deg 48.2% 19.2%;
+  
+    --error-color: 1.2deg 76.3% 50.6%;
+    --on-error-color: 351.3deg 100% 92.2%;
+    --error-container: 0deg 80% 43.9%;
+    --on-error-conatainer: 0deg 100% 89%;
+  
+    --success-color: 120deg 55.2% 43.1%;
+    --on-success-color: 120deg 100% 88.2%;
+    --success-container: 120deg 45.9% 32.4%;
+    --on-success-conatainer: 120deg 54.1% 77.8%;
+    
+  }
+  
+  .dark {
+    --primary-1:43deg 16% 9%;
+    --primary-2: 44deg 21% 10%;
+    --primary-3: 46deg 48% 12%;
+    --primary-4: 47deg 93% 12%;
+    --primary-5: 48deg 97% 14%;
+    --primary-6: 47deg 60% 20%;
+    --primary-7: 46deg 47% 27%;
+    --primary-8: 46deg 45% 34%;
+    --primary-9: 47deg 81% 56%;
+    --primary-10: 48deg 75% 51%;
+    --primary-11: 47deg 91% 64%;
+    --primary-12: 46deg 81% 85%;
+  
+  }
+  /* .blue {
+    --primary-1:6.8deg 81.6% 61.6%;
+  } */
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground-rgb: 255, 255, 255;
+      --background-start-rgb: 0, 0, 0;
+      --background-end-rgb: 0, 0, 0;
+    }
+  } 
