@@ -5,6 +5,8 @@ import { z } from 'zod'; // Import Zod
 import { zodResolver } from '@hookform/resolvers/zod';
 import InputField from "@/components/ui/InputField"
 import { useUsersMutation } from '@/redux/features/users/usersApiSlice';
+import { useToast } from "@/components/ui/use-toast";
+
 
 // import { Button } from "@/components/ui/button"
 import {
@@ -59,15 +61,30 @@ const SignUpPage = () => {
         resolver: zodResolver(userSchema),
     });
 
+    //initializing the toaster
+    const {toast} = useToast()
+
     //Function that handles submision of validated data
     const onSubmit = async (data: z.infer<typeof userSchema>) => {
         console.log(data);
         // Submit the data to your API or perform any other action
-        registerUser(data).unwrap()
-            .then(
-            // todo add toast component (redirect to email for activation)
-        )
-            .catch(error => console.log(error))
+        registerUser(data)
+			.unwrap()
+			.then(() => {
+				// todo add toast component (redirect to email for activation)
+				toast({
+					title: "Registered successfully",
+					description: "Check your email to activate your account",
+				});
+			}
+			)
+			.catch((error) => {
+                toast({
+					title: "Something went wrong",
+					description: "There was a problem with your request",
+				});
+                console.log(error)
+            });
     };
 
     return (

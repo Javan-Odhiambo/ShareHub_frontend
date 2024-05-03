@@ -14,11 +14,21 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useDasboardCreateMutation } from "@/redux/features/dashboard/dashboardApiSlice";
+
+
 
 //Should be imported from the types file.
-type Project = {
+type Innovation = {
 	title: string;
 	description: string;
 	category: string;
@@ -29,7 +39,7 @@ type Project = {
 
 //Define the schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
-const ProjectSchema = z
+const InnovationSchema = z
 	.object({
 		title: z.string().min(2).max(50),
 		description: z.string().min(2),
@@ -44,15 +54,24 @@ const ProjectSchema = z
 		//image
 	});
 
-const ProjectPage = () => {
-	const form = useForm<z.infer<typeof ProjectSchema>>({
-		resolver: zodResolver(ProjectSchema),
+const InnovationPage = () => {
+
+	const form = useForm<z.infer<typeof InnovationSchema>>({
+		resolver: zodResolver(InnovationSchema),
 	});
 
+	const [createInovation , {isLoading}]  = useDasboardCreateMutation()
+
 	//Function that handles submision of validated data
-	const onSubmit = async (data: z.infer<typeof ProjectSchema>) => {
+	const onSubmit = async (data: z.infer<typeof InnovationSchema>) => {
 		console.log(data);
 		// Submit the data to your API or perform any other action
+		createInovation(data).unwrap()
+		.then(response => {
+
+			// toast created successfully
+			console.log(response)
+		})
 
 	};
 
@@ -61,11 +80,14 @@ const ProjectPage = () => {
 
 	return (
 		<div className="px-5 md:px-20">
-			<h1 className="font-semibold text-lg text-center my-5">Create a New Project</h1>
+			<h1 className="font-semibold text-lg text-center my-5">Create a New Innovation</h1>
 
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="space-y-8"
+				>
 					<FormField
 						control={form.control}
 						name="title"
@@ -73,7 +95,7 @@ const ProjectPage = () => {
 							<FormItem>
 								<FormLabel>Title</FormLabel>
 								<FormControl>
-									<Input placeholder="Project Title" {...field} />
+									<Input placeholder="Innovation Title" {...field} />
 								</FormControl>
 								<FormDescription>
 
@@ -83,7 +105,6 @@ const ProjectPage = () => {
 						)}
 					/>
 
-
 					<FormField
 						control={form.control}
 						name="co_authors"
@@ -91,11 +112,12 @@ const ProjectPage = () => {
 							<FormItem>
 								<FormLabel>Co Authors</FormLabel>
 								<FormControl>
-									<Input placeholder="Co Authors" {...field} />
+									<Input
+										placeholder="Co Authors"
+										{...field}
+									/>
 								</FormControl>
-								<FormDescription>
-
-								</FormDescription>
+								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -107,33 +129,53 @@ const ProjectPage = () => {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Category</FormLabel>
-								<FormControl>
-									<Input placeholder="Project Category" {...field} />
-								</FormControl>
-								<FormDescription>
-
-								</FormDescription>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select a category" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value="Cancer">
+											Cancer
+										</SelectItem>
+										<SelectItem value="HIV">
+											HIV
+										</SelectItem>
+										<SelectItem value="COVID-19">
+											COVID-19
+										</SelectItem>
+									</SelectContent>
+								</Select>
+								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-
 
 					<FormField
 						control={form.control}
 						name="image"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Project Banner</FormLabel>
+								<FormLabel>Innovation Banner</FormLabel>
 								<FormControl>
-
-									<Input type="file" {...fileRef}{...field} onChange={(event) => {
-										field.onChange(event.target?.files?.[0] ?? undefined);
-									}}/>
+									<Input
+										type="file"
+										{...fileRef}
+										{...field}
+										onChange={(event) => {
+											field.onChange(
+												event.target?.files?.[0] ??
+													undefined
+											);
+										}}
+									/>
 								</FormControl>
-								<FormDescription>
-
-								</FormDescription>
+								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
@@ -147,7 +189,7 @@ const ProjectPage = () => {
 								<FormLabel>Description</FormLabel>
 								<FormControl>
 									<Textarea
-										placeholder="Tell us more about the project..."
+										placeholder="Tell us more about the Innovation..."
 										{...field}
 									/>
 								</FormControl>
@@ -160,13 +202,17 @@ const ProjectPage = () => {
 						)}
 					/>
 
-					<Button size={"lg"} type="submit">Create Project</Button>
+					<Button
+						size={"lg"}
+						type="submit"
+					>
+						Create 
+					</Button>
 				</form>
 			</Form>
-
 		</div>
 	);
 
 };
 
-export default ProjectPage;
+export default InnovationPage;
