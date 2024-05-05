@@ -7,12 +7,15 @@ import type {
 	FetchArgs,
 	FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-import { logout , setToken} from "./auth/authSlice";
+import { logout , setAuth} from "./auth/authSlice";
 import { Mutex } from "async-mutex";
 
 
 const mutex = new Mutex();
-const baseQuery = fetchBaseQuery({ baseUrl: baseUrl });
+const baseQuery = fetchBaseQuery({
+	baseUrl: baseUrl,
+	credentials: "include",
+});
 const baseQueryWithReauth: BaseQueryFn<
 	string | FetchArgs,
 	unknown,
@@ -28,16 +31,14 @@ const baseQueryWithReauth: BaseQueryFn<
 			try {
 				const refreshResult = await baseQuery(
 					{
-                        url:"/jwt/refresh/",
+                        url:"/auth/jwt/refresh/",
                         method:"POST"
                     },
 					api,
 					extraOptions
 				);
 				if (refreshResult.data) {
-                    api.dispatch(setToken(refreshResult.data));
-					// TODO when testing add a console.log to see how refreshResult.data looks like
-					//console.log(refreshResult.data)
+                    api.dispatch(setAuth());
 			
 					result = await baseQuery(args, api, extraOptions);
 				} else {
@@ -59,5 +60,5 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
     reducerPath: 'api',
 	baseQuery: baseQueryWithReauth,
-    endpoints:(build)=>({})
+    endpoints:(builder)=>({})
 })

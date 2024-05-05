@@ -20,63 +20,57 @@ import { useToast } from "@/components/ui/use-toast";
 
 //Should be imported from the types file.
 type ResetPassword = {
-	password: string;
-	re_password: string;
+	new_password: string;
+	re_new_password: string;
 };
 
 interface Params {
-	uid:string;
-	token:string;
+	uid: string;
+	token: string;
 }
 
 //Define the schema for the form
 const ResetPasswordSchema = z
 	.object({
-		password: z
+		new_password: z
 			.string()
 			.min(6)
 			.regex(
 				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
 				"Password must contain at least one uppercase letter and one digit"
 			),
-		re_password: z.string()
+		re_new_password: z.string(),
 	})
-	.refine((data) => data.password === data.re_password, {
+	.refine((data) => data.new_password === data.re_new_password, {
 		message: "Passwords don't match",
-		path: ["re_password"],
+		path: ["re_new_password"],
 	});
 
-const ResetPasswordPage = ( params: Params ) => {
+const ResetPasswordPage = ({ params }: { params: Params }) => {
 	const form = useForm<ResetPassword>({
 		resolver: zodResolver(ResetPasswordSchema),
 	});
 	// retrieve uid and token from params
 	const { uid, token } = params;
 	// initialize usereset password mutation
-	const [ resetPassword, {isLoading}] = useResetPasswordConfirmMutation()
+	const [resetPassword, { isLoading }] = useResetPasswordConfirmMutation();
 
 	//initialize toast
-	const {toast} = useToast()
+	const { toast } = useToast();
 
 	//Function that handles submision of validated data
 	const onSubmit = async (data: ResetPassword) => {
-		console.log(data);
+		console.log({ uid, token, ...data });
 		// Submit the data to your API or perform any other action
-		const requestDetails = {
-			uid:uid,
-			token:token,
-			...data,
-		}
-		resetPassword(requestDetails).unwrap()
-		.then(() =>{
-			toast({
-				description:"Password reset successfully"
-			})
-		}
-			
-		)
-		.catch((error) => console.log(error))
 
+		resetPassword({ uid, token, ...data })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "Password reset successfully",
+				});
+			})
+			.catch((error) => console.log(error));
 	};
 
 	return (
@@ -89,10 +83,10 @@ const ResetPasswordPage = ( params: Params ) => {
 				>
 					<FormField
 						control={form.control}
-						name="password"
+						name="new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Password</FormLabel>
+								<FormLabel>New Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"
@@ -108,7 +102,7 @@ const ResetPasswordPage = ( params: Params ) => {
 
 					<FormField
 						control={form.control}
-						name="re_password"
+						name="re_new_password"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Confirm Password</FormLabel>

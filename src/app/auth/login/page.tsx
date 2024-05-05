@@ -3,9 +3,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // Import Zod
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useJwtCreateMutation } from "@/redux/features/auth/authApiSlice";
-import { useAppDispatch } from "@/redux/hooks";
-import { login } from "@/redux/features/auth/authSlice";
 import {
 	Form,
 	FormControl,
@@ -19,6 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useJwtCreateMutation } from "@/redux/features/auth/authApiSlice";
+import { setAuth } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import Link from "next/link";
 
 //Should be imported from the types file.
 type LoginDetails = {
@@ -59,16 +60,15 @@ const LoginPage = () => {
 		//* Submit the data to your API or perform any other action
 		useLogin(data)
 			.unwrap()
-			.then((response) => {
-				//check format of response isJson? => parse or use as is
-				console.log(response);
-				//dispatch Login action to handle setting state
-				dispatch(login(response));
+			.then(() => {
+
+				dispatch(setAuth());
 				toast({
 					title: "Login success",
 					description: "redirecting you to the home page",
 				});
 				router.push("/dashboard");
+
 			})
 			.catch((error) => console.log(error));
 	};
@@ -116,6 +116,7 @@ const LoginPage = () => {
 							</FormItem>
 						)}
 					/>
+					<Link href="/auth/forgot-password" className="text-right text-blue-500 underline block">Forgot password ?</Link>
 					<Button type="submit">Submit</Button>
 				</form>
 			</Form>

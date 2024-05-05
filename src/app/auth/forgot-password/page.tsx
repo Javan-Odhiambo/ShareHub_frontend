@@ -3,8 +3,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // Import Zod
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputField from "@/components/ui/InputField";
-import { useResetPasswordMutation } from "@/redux/features/users/usersApiSlice";
 import {
 	Form,
 	FormControl,
@@ -16,8 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useResetPasswordMutation } from "@/redux/features/users/usersApiSlice";
 
 //Should be imported from the types file.
 type ForgotPassword = {
@@ -33,19 +31,16 @@ const ResetPasswordPage = () => {
 	const form = useForm<ForgotPassword>({
 		resolver: zodResolver(ForgotPasswordShema),
 	});
-	// initialiising useResetPassowrd mutation
+	// * initialiising useResetPassowrd mutation
 	const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
-	//initializing router
-	const router = useRouter()
-
-	//init toast
+	//* initializing toast
 	const { toast } = useToast();
 
-	//Function that handles submision of validated data
+	// * Function that handles submision of validated data
 	const onSubmit = async (data: ForgotPassword) => {
 		console.log(data);
-		// Submit the data to your API or perform any other action
+		// * Submit the data to your API or perform any other action
 		resetPassword(data)
 			.unwrap()
 			.then(() => {
