@@ -4,6 +4,7 @@ import {
 	useInnovationsFetchManyQuery,
 	useInnovationsFetchOneQuery,
 } from "@/redux/features/innovations/innovationsApiSlice";
+import ProjectCard from "@/components/ui/projectcard";
 
 const Home = () => {
 	// *getting many innovations , pass null when there are no query parameters
@@ -22,6 +23,7 @@ const Home = () => {
 		<div>
 			<h1>Home Page</h1>
 			{isLoading && <p>Loading..</p>}
+      <ProjectCard/>
 		</div>
 	);
 };

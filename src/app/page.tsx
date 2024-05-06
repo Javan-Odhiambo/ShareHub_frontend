@@ -4,7 +4,7 @@ import ThemeChanger from "@/components/ui/ThemeChanger";
 
 import ToastNotification from "@/components/ui/Toast";
 
-export default function Home() {
+export default function LandingPage() {
   return (
 		<main className="flex min-h-screen items-center justify-center bg-primary-app-bg relative">
 			<h1>Landing Page</h1>
@@ -17,8 +17,8 @@ export default function Home() {
 				<p className="text-primary-high-contrast-text text-center">
 					Text
 				</p>
-			</div>
-			<ToastNotification
+			</div> */}
+			{/* <ToastNotification
 				title="Button Clicked !!"
 				description="Alert using my toast"
 				triggerButtonText="Test Toast Notification"
