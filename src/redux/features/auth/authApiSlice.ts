@@ -1,22 +1,30 @@
 import { baseApi } from "../baseApi";
 
 const authApiSlice = baseApi.injectEndpoints({
+	overrideExisting: true,
 	endpoints: (builder) => ({
 		jwtCreate: builder.mutation({
 			query: ({ email, password }) => ({
-				url: "/jwt/create/",
+				url: "/auth/jwt/create/",
 				method: "POST",
 				body: { email, password },
 			}),
 		}),
-		verify: builder.mutation({
-			query: ({ token }) => ({
-				url: "/jwt/verify/",
+		jwtVerify: builder.mutation({
+			query: () => ({
+				url: "/auth/jwt/verify/",
 				method: "POST",
-                body:{ token }
+			}),
+		}),
+
+		// * logout to delete cookies
+		logout: builder.mutation({
+			query: ({}) => ({
+				url: "/auth/logout/",
+				method: "POST",
 			}),
 		}),
 	}),
 });
 
-export const { useJwtCreateMutation } = authApiSlice
+export const { useJwtCreateMutation,useJwtVerifyMutation,useLogoutMutation } = authApiSlice
