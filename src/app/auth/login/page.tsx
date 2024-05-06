@@ -117,7 +117,7 @@ const LoginPage = () => {
 						)}
 					/>
 					<Link href="/auth/forgot-password" className="text-right text-blue-500 underline block">Forgot password ?</Link>
-					<Button type="submit">Submit</Button>
+					<Button type="submit">Login</Button>
 				</form>
 			</Form>
 		</div>
