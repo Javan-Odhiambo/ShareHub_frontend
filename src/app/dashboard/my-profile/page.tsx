@@ -23,7 +23,7 @@ const MyProfilePage = () => {
 							<AvatarImage src={myProfileData.profile_picture} />
 							<AvatarFallback>CN</AvatarFallback>
 						</Avatar>
-                    <Link href="#" className="underline text-stone-900">Edit Profile </Link>
+                    <Link href="/dashboard/my-profile/edit/" className="underline text-stone-900">Edit Profile </Link>
 					</div>
 					<div className="max-w-xl">
 						<h2 className="font-semibold text-xl">
