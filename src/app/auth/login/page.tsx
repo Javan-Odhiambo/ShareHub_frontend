@@ -77,10 +77,7 @@ const LoginPage = () => {
 		<div className="max-w-[500px] w-[400px] left-1/2 -translate-x-1/2 absolute top-1/2 -translate-y-1/2  border py-9 px-4 rounded-2xl">
 			<h1 className="text-xl font-semibold text-center">Login</h1>
 			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8"
-				>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<FormField
 						control={form.control}
 						name="email"
@@ -88,10 +85,7 @@ const LoginPage = () => {
 							<FormItem>
 								<FormLabel>Email </FormLabel>
 								<FormControl>
-									<Input
-										placeholder="email"
-										{...field}
-									/>
+									<Input placeholder="email" {...field} />
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
@@ -105,19 +99,24 @@ const LoginPage = () => {
 							<FormItem>
 								<FormLabel>Password</FormLabel>
 								<FormControl>
-									<Input
-										type="password"
-										placeholder="password"
-										{...field}
-									/>
+									<Input type="password" placeholder="password" {...field} />
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<Link href="/auth/forgot-password" className="text-right text-blue-500 underline block">Forgot password ?</Link>
 					<Button type="submit">Login</Button>
+					<Link
+						href="/auth/forgot-password"
+						className="text-sm text-blue-500 underline block"
+					>
+						Forgot password ?
+					</Link>
+					<Link href="/auth/signup" className="text-sm text-blue-500 block mt-3">
+						Don't have an account?
+						<span className="underline text-stone-900 px-1">SignUp</span>
+					</Link>
 				</form>
 			</Form>
 		</div>
