@@ -21,6 +21,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 		}),
 
+		// TODO: Change the route to /api/innnovations/<id>
 		// * get one of innovations
 		innovationsFetchOne: builder.query({
 			query: ({ id }) => ({
@@ -41,6 +42,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 		}),
 
+		// TODO: Change the route to /api/innnovations/<id>
 		// *update an innovation not all fields required
 		innovationsUpdatePatch: builder.mutation({
 			query: ({ id, title, description, category, co_authors }) => ({
@@ -51,6 +53,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 		}),
 
+		// TODO: Change the route to /api/innnovations/<id>
 		//* delete an innovation
 		innovationsDelete: builder.mutation({
 			query: ({ id }) => ({
@@ -59,6 +62,17 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				params: { id },
 			}),
 		}),
+
+		// TODO: get bookmared innovations: /api/innovations/bookmarks/
+		// TODO: like an innovation : /api/innovations/<id>/like/
+		// TODO: unlike an innovation: /api/innovations/<id>/unlike/
+		// TODO: bookmark an innovation: /api/innovations/<id>/bookmark/
+		// TODO: unbookmark an innovation: /api/innovations/<id>/unbookmark/
+		// TODO: get innovation comments: /api/innovations/<id>/comments/
+		// TODO: create innovation comment: /api/innovations/<id>/comments/
+		// TODO: edit innovation comment: /api/innovations/<id>/comments/<id>/
+		// TODO: delete innovation comment: /api/innovations/<id>/comments/<id>/
+
 	}),
 });
 

@@ -75,6 +75,7 @@ const usersApiSlice = baseApi.injectEndpoints({
 		}),
 
 		// * set an email
+		// TODO: Remove mutation and places it is referenced
 		usersSetEmail: builder.mutation({
 			query: ({ current_password, new_email }) => ({
 				url: "/auth/users/set_email/",
@@ -84,6 +85,7 @@ const usersApiSlice = baseApi.injectEndpoints({
 		}),
 
 		// * set password
+		// TODO: Remove mutation and places it is referenced
 		usersSetPasword: builder.mutation({
 			query: ({ new_password, re_new_password, current_password }) => ({
 				url: "/auth/users/set_password/",
