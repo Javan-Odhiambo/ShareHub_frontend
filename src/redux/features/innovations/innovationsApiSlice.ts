@@ -14,10 +14,17 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		// * create an innovation
 		innovationsCreate: builder.mutation({
-			query: ({ title, description, category, status, co_authors , dataset }) => ({
+			query: ({
+				title,
+				description,
+				category,
+				status,
+				co_authors,
+				dataset,
+			}) => ({
 				url: "/api/innovations/",
 				method: "POST",
-				body: { title, description, category, status, co_authors , dataset },
+				body: { title, description, category, status, co_authors, dataset },
 			}),
 		}),
 
@@ -25,9 +32,9 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// * get one of innovations
 		innovationsFetchOne: builder.query({
 			query: ({ id }) => ({
-				url: "/api/innovations/",
+				url: `/api/innovations/${id}/`,
 				method: "GET",
-				params: { id },
+				// params: { id },
 			}),
 		}),
 
@@ -35,9 +42,9 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// * update an innovation all fields required
 		innovationsUpdatePut: builder.mutation({
 			query: ({ id, title, description, category, co_authors }) => ({
-				url: "/api/innovations/",
+				url: `/api/innovations/${id}/`,
 				method: "PUT",
-				params: { id },
+				// params: { id },
 				body: { title, description, category, co_authors },
 			}),
 		}),
@@ -46,9 +53,9 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// *update an innovation not all fields required
 		innovationsUpdatePatch: builder.mutation({
 			query: ({ id, title, description, category, co_authors }) => ({
-				url: "/api/innovations/",
+				url: `/api/innovations/${id}/`,
 				method: "PATCH",
-				params: { id },
+				// params: { id },
 				body: { title, description, category, co_authors },
 			}),
 		}),
@@ -57,9 +64,9 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		//* delete an innovation
 		innovationsDelete: builder.mutation({
 			query: ({ id }) => ({
-				url: "/api/innovations/",
+				url: `/api/innovations/${id}/`,
 				method: "DELETE",
-				params: { id },
+				// params: { id },
 			}),
 		}),
 
@@ -73,14 +80,153 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// TODO: edit innovation comment: /api/innovations/<id>/comments/<id>/
 		// TODO: delete innovation comment: /api/innovations/<id>/comments/<id>/
 
+		// * BOOKMARKS
+		// ? what is the purpose of this query
+		// * list bookmarked innovations
+		innovationsBookmarksList: builder.query({
+			query: () => ({
+				url: "/api/innovations/bookmarks/",
+				method: "GET",
+			}),
+		}),
+
+		// * bookmark an innovation
+		innovationsBookmarksCreate: builder.mutation({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/bookmarks/`,
+				method: "POST",
+			}),
+		}),
+
+		// * un-bookmark an innovation
+		innovationsUnbookmark: builder.mutation({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/unbookmark/`,
+				method: "DELETE",
+			}),
+		}),
+
+		//* LIKING
+		//? like innovation
+		innovationsLikes: builder.query({
+			query: () => ({
+				url: `/api/innovations/likes/`,
+				method: "GET",
+			}),
+		}),
+
+		// * GET innovation likes
+		innovationsLikesGet: builder.query({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/likes/`,
+				method: "GET",
+			}),
+		}),
+
+		//* LIKE an innovation
+		innovationsLikesCreate: builder.mutation({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/likes/`,
+				method: "POST",
+			}),
+		}),
+
+		//* Unlike an innovation
+		innovationsUnlike: builder.mutation({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/unlikes/`,
+				method: "DELETE",
+			}),
+		}),
+
+		//* COMMENTS
+		// * list innovation comments
+		innovationsCommentsList: builder.query({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/comments/`,
+				method: "GET",
+			}),
+		}),
+
+		// * create an innovation comment
+		innovationsCommentsCreate: builder.mutation({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/comments/`,
+				method: "POST",
+			}),
+		}),
+
+		// * Innovations comments read
+		innovationsCommentsRead: builder.query({
+			query: ({ id, cpk }) => ({
+				url: `/api/innovations/${id}/comments/${cpk}/`,
+				method: "GET",
+			}),
+		}),
+
+		// * Innovation comments update (partial)
+		innovationsCommentsUpdatePatch: builder.mutation({
+			query: ({ id, cpk }) => ({
+				url: `/api/innovations/${id}/comments/${cpk}/`,
+				method: "PATCH",
+			}),
+		}),
+
+		// * Innvations comments update(PUT)
+		innovationsCommentsUpdatePut: builder.mutation({
+			query: ({ id, cpk }) => ({
+				url: `/api/innovations/${id}/comments/${cpk}/`,
+				method: "PUT",
+			}),
+		}),
+
+		// * Innvations comments delete
+		innovationsCommentsDelete: builder.mutation({
+			query: ({ id, cpk }) => ({
+				url: `/api/innovations/${id}/comments/${cpk}/`,
+				method: "DELETE",
+			}),
+		}),
+
+		//* Innovations export
+		innovationsExportList: builder.query({
+			query: ({ id }) => ({
+				url: `/api/innovations/${id}/export/`,
+				method: "GET",
+			}),
+		}),
 	}),
 });
 
 export const {
+	//* basic innovations
 	useInnovationsCreateMutation,
 	useInnovationsDeleteMutation,
 	useInnovationsFetchManyQuery,
 	useInnovationsFetchOneQuery,
 	useInnovationsUpdatePatchMutation,
 	useInnovationsUpdatePutMutation,
+
+	//* innovation bookmarks
+	useInnovationsBookmarksCreateMutation,
+	useInnovationsBookmarksListQuery,
+	useInnovationsUnbookmarkMutation,
+
+	//* innovation comments
+	useInnovationsCommentsCreateMutation,
+	useInnovationsCommentsListQuery,
+	useInnovationsCommentsDeleteMutation,
+	useInnovationsCommentsUpdatePatchMutation,
+	useInnovationsCommentsUpdatePutMutation,
+	useInnovationsCommentsReadQuery,
+
+	//* innovation likes
+	useInnovationsLikesCreateMutation,
+	useInnovationsLikesGetQuery,
+	useInnovationsUnlikeMutation,
+	useInnovationsLikesQuery,
+
+	//* innovation export
+	useInnovationsExportListQuery,
+	
 } = innovationsApiSlice;
