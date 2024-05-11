@@ -86,7 +86,7 @@ const SignUpPage = () => {
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8"
+					className="space-y-6"
 				>
 					<FormField
 						control={form.control}
@@ -185,6 +185,13 @@ const SignUpPage = () => {
 						className="text-sm text-blue-400 block mt-3"
 					>
 						Didn't Get an activation email?
+					</Link>
+					<Link
+						href="/auth/login"
+						className="text-sm text-blue-400 block mt-3"
+					>
+						Already have an account?
+						<span className="underline text-stone-900 px-1">Login</span>
 					</Link>
 				</form>
 			</Form>
