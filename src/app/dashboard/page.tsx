@@ -20,10 +20,16 @@ const Home = () => {
 
 	// todo implement shadcn ui skeleton while loading
 	return (
-		<div>
+		<div className="w-full">
 			<h1>Home Page</h1>
 			{isLoading && <p>Loading..</p>}
+			<section className="flex flex-wrap mx-auto gap-4 p-4">
+
       <ProjectCard/>
+	  <ProjectCard/>
+	  <ProjectCard/>
+			</section>
+
 		</div>
 	);
 };
