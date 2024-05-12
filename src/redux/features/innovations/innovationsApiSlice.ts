@@ -20,11 +20,14 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				category,
 				status,
 				co_authors,
-				dataset,
+				banner_image,
 			}) => ({
 				url: "/api/innovations/",
 				method: "POST",
-				body: { title, description, category, status, co_authors, dataset },
+				body: { title, description, category, status, co_authors, banner_image },
+				headers:{
+					"Content-Type":"multipart/form-data"
+				}
 			}),
 		}),
 
