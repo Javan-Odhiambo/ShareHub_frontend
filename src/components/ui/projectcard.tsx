@@ -214,14 +214,15 @@ const ProjectCard = ({
 				)}
 			</div>
 			<CardContent className="pb-0">
-				<div className="flex  justify-between gap-5">
+				<div className="flex  flex-col justify-between gap-5">
 					<div className="flex-1">
 						<Image
 							loader={ () => dashboard_banner_image_url}
 							src="/Image Icon.png"
-							width={300}
+							width={450}
 							height={150}
 							alt="Dashboard image"
+							objectFit="contain"
 							className=""
 						/>
 					</div>
