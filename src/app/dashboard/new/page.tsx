@@ -25,6 +25,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useInnovationsCreateMutation } from "@/redux/features/innovations/innovationsApiSlice";
 import RequireAuth from "@/redux/features/auth/RequireAuth";
+import { FileInput } from "@/components/ui/FileInput";
+
+const isBrowser = typeof window !== "undefined";
+const FileListType = isBrowser ? FileList : Array;
 
 //Define the schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
@@ -33,11 +37,11 @@ const InnovationSchema = z.object({
 	description: z.string().min(2),
 	category: z.string().min(1).max(3),
 	status: z.string().min(1).max(3),
-	co_authors: z.string().min(2).max(50),
+	co_authors: z.string().min(2).max(50).optional(),
 	banner_image: z
-		.instanceof(FileList)
-		.refine((file) => file?.length == 1, "File is required."),
-	// .optional()
+		.instanceof(FileListType)
+		.optional()
+		.refine((file) => file == null || file?.length == 1, "File is required."),
 	// .refine((file) => {
 	// 	return !file || file.size <= MAX_UPLOAD_SIZE;
 	// }, "File size must be less than 3MB"),
@@ -58,44 +62,20 @@ const InnovationPage = () => {
 
 	//Function that handles submision of validated data
 	const onSubmit = async (data: Innovation) => {
-		console.log(data);
-		// fetch("http://localhost:8000/api/innovations/", {
-		// 	method: "POST",
-		// 	credentials: "include",
-		// 	body: { ...data },
-		// 	headers:{
-		// 		"content-type":"multipart/form-data"
-		// 	}
-		// })
-		// 	.then((res) => {
-		// 		if (res.ok) {
-		// 			return res.json();
-		// 		} else {
-		// 			throw new Error();
-		// 		}
-		// 	})
-		// 	.then((data) => {
-		// 		console.log(data);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
-
 		// Submit the data to your API or perform any other action
-		// createInovation(data)
-		// 	.unwrap()
-		// 	.then((response) => {
-		// 		// toast created successfully
-		// 		toast({
-		// 			title: "Innovation Created successfully",
-		// 			description:
-		// 				"You can now view you innovation in your profile",
-		// 		});
-		// 		console.log(response);
-		// 	})
-		// 	.catch((error) => {
-		// 		console.log(error);
-		// 	});
+		createInovation(data)
+			.unwrap()
+			.then((response) => {
+				// toast created successfully
+				toast({
+					title: "Innovation Created successfully",
+					description: "You can now view you innovation in your profile",
+				});
+				console.log(response);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 	};
 
 	const fileRef = form.register("banner_image");
@@ -120,7 +100,11 @@ const InnovationPage = () => {
 							<FormItem>
 								<FormLabel>Title</FormLabel>
 								<FormControl>
-									<Input placeholder="Innovation Title" {...field} />
+									<Input
+										placeholder="Innovation Title"
+										{...field}
+										value={field.value || ""}
+									/>
 								</FormControl>
 								<FormDescription></FormDescription>
 								<FormMessage />
@@ -135,7 +119,11 @@ const InnovationPage = () => {
 							<FormItem>
 								<FormLabel>Co Authors</FormLabel>
 								<FormControl>
-									<Input placeholder="Co Authors" {...field} />
+									<Input
+										placeholder="Co Authors"
+										{...field}
+										value={field.value || ""}
+									/>
 								</FormControl>
 								<FormDescription></FormDescription>
 								<FormMessage />
@@ -201,19 +189,7 @@ const InnovationPage = () => {
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Banner image</FormLabel>
-								<FormControl>
-									<Input
-										type="file"
-										placeholder="banner_image"
-										{...fileRef}
-										// onChange={(event) => {
-										// 	field.onChange(
-										// 		event.target.files?.[0] ??
-										// 			undefined
-										// 	);
-										// }}
-									/>
-								</FormControl>
+								<FileInput {...form.register("banner_image")} />
 								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
@@ -230,6 +206,7 @@ const InnovationPage = () => {
 									<Textarea
 										placeholder="Tell us more about the Innovation..."
 										{...field}
+										value={field.value || ""}
 									/>
 								</FormControl>
 								<FormDescription>
@@ -241,7 +218,7 @@ const InnovationPage = () => {
 						)}
 					/>
 
-					<Button size={"lg"} type="submit">
+					<Button size={"lg"} type="submit" disabled={isLoading}>
 						Create
 					</Button>
 				</form>
