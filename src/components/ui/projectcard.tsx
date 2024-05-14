@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,9 +57,13 @@ import {
 } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "./use-toast";
+import { useInnovationsDeleteMutation } from "@/redux/features/innovations/innovationsApiSlice";
+import { extractIdFromUrl } from "@/utils/ExtractIdFromUrl";
+import { useRouter } from "next/navigation";
 
 // * interface for project card props
 interface CardProps {
+	innovation_url: string;
 	author_avator_image_url: string;
 	author_first_name: string;
 	author_last_name: string;
@@ -69,6 +73,7 @@ interface CardProps {
 }
 
 const ProjectCard = ({
+	innovation_url,
 	author_avator_image_url,
 	author_first_name,
 	author_last_name,
@@ -95,15 +100,36 @@ const ProjectCard = ({
 		setShowDeleteDialog(false);
 	};
 
+	//initializing the delete mutation
+	const [deleteInnovation, { isLoading }] = useInnovationsDeleteMutation();
+
+	const innovationId = extractIdFromUrl(innovation_url);
 	const handleConfirmDelete = () => {
 		// Perform delete operation here
 		console.log("Project deleted");
 		handleCloseDeleteDialog();
-		toast({
-			title: "Project Deleted successfully",
-			variant: "destructive",
-		});
+		console.log(innovationId);
+		deleteInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					title: "Project Deleted successfully",
+					variant: "destructive",
+				});
+			})
+			.catch((error) => {
+				toast({
+					title: "Something went wrong",
+					description: "There was a problem with your deletion request",
+				});
+				console.log(error);
+			});
+	};
 
+	const router = useRouter();
+	const handleEditClick = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		return router.push(`/dashboard/new/${innovationId}`);
 	};
 
 	return (
@@ -134,12 +160,20 @@ const ProjectCard = ({
 							</>
 						</DropdownMenuItem>
 
-						<DropdownMenuItem>
+						<DropdownMenuItem onSelect={handleEditClick}>
 							<SquarePen className="mr-2 h-4 w-4" />
-							<Link href={""}>
+							<Link
+								href={{
+									pathname: "/dashboard/new",
+									query: {
+										id: innovationId,
+									},
+								}}
+							>
 								{" "}
 								{/*TODO: Add edit page link */}
-								<span>Edit</span>
+								{/* <span>Edit</span> */}
+								Edit
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
@@ -217,7 +251,7 @@ const ProjectCard = ({
 				<div className="flex  flex-col justify-between gap-5">
 					<div className="flex-1">
 						<Image
-							loader={ () => dashboard_banner_image_url}
+							loader={() => dashboard_banner_image_url}
 							src="/Image Icon.png"
 							width={450}
 							height={150}
