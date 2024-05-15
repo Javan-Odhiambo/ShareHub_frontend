@@ -57,7 +57,13 @@ import {
 } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
 import { toast } from "./use-toast";
-import { useInnovationsDeleteMutation } from "@/redux/features/innovations/innovationsApiSlice";
+import {
+	useInnovationsDeleteMutation,
+	useInnovationsLikesCreateMutation,
+	useInnovationsBookmarksCreateMutation,
+	useInnovationsUnbookmarkMutation,
+	useInnovationsUnlikeMutation,
+} from "@/redux/features/innovations/innovationsApiSlice";
 import { extractIdFromUrl } from "@/utils/ExtractIdFromUrl";
 import { useRouter } from "next/navigation";
 
@@ -70,6 +76,10 @@ interface CardProps {
 	project_title: string;
 	project_description: string;
 	dashboard_banner_image_url: string;
+	likes_count:number;
+	comments_count:number;
+	is_liked:boolean;
+	is_bookmarked:boolean;
 }
 
 const ProjectCard = ({
@@ -80,6 +90,10 @@ const ProjectCard = ({
 	project_title,
 	project_description,
 	dashboard_banner_image_url,
+	likes_count,
+	comments_count,
+	is_liked = false,
+	is_bookmarked = false,
 }: CardProps) => {
 	const [showShareDialog, setShowShareDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -132,6 +146,76 @@ const ProjectCard = ({
 		return router.push(`/dashboard/new/${innovationId}`);
 	};
 
+	//liking an innovation
+	const [likeInnovation, { error:likeError }] = useInnovationsLikesCreateMutation();
+	const handleLike = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		likeInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "added to your liked innovation",
+				});
+			})
+			.catch((error) => console.log(error))
+	};
+	//unliking an innovation
+	const [unlikeInnovation, { error:unlikeError }] = useInnovationsUnlikeMutation()
+	const handleUnlike = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		unlikeInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "Removed from your liked innovations",
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				console.log(unlikeError);
+				toast({
+					title: "Something went wrong",
+					description: "There was a problem with your unlike request",
+				});
+			});
+	};
+
+	//bookmarking an innovation
+	const [bookmarkInnovaion , { error:bookmarkError }] = useInnovationsBookmarksCreateMutation()
+	const handleBookmark = () =>{
+		const innovationId = extractIdFromUrl(innovation_url)
+		bookmarkInnovaion({ id : innovationId })
+			.unwrap()
+			.then(() =>{
+				toast({
+					description:"added to your bookmarked innovations"
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+				console.log(bookmarkError)
+			})
+	}
+	//unbookmarking an innovation
+	const [unbookmarkInnovation, { error:unbookmarkError }] = useInnovationsUnbookmarkMutation()
+	const handleUnbookmark = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		unbookmarkInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "Removed from your bookmarked innovations",
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				console.log(unbookmarkError);
+				toast({
+					title: "Something went wrong",
+					description: "There was a problem with your unbookmark request",
+				});
+			});
+	};
 	return (
 		<Card className="max-w-[500px]">
 			<div className="p-0 mx-6 flex justify-between items-center">
@@ -271,16 +355,30 @@ const ProjectCard = ({
 			<CardFooter className="flex gap-5 pb-3">
 				<div className="flex flex-1 justify-between">
 					<div className="flex gap-4">
-						<span className="flex">
-							<Heart className="hover:fill-red-500" /> 50
+						<span
+							className="flex"
+							onClick={is_liked ? handleUnlike : handleLike}
+							>
+							{is_liked ? (
+								<Heart className="fill-red-500" />
+							) : (
+								<Heart className="hover:fill-red-500" />
+							)}{" "}
+							{likes_count}
 						</span>
 						<span className="flex">
-							<MessageCircle /> 20{" "}
+							<MessageCircle /> {comments_count}{" "}
 						</span>
 					</div>
-					<span className="flex">
-						{" "}
-						<Bookmark />{" "}
+					<span
+						className="flex"
+						onClick={is_bookmarked ? handleUnbookmark : handleBookmark}
+					>
+						{is_bookmarked ? (
+							<Bookmark className="fill-green-600" />
+						) : (
+							<Bookmark />
+						)}
 					</span>
 				</div>
 				<Link href="/project/id" className="flex-1">
