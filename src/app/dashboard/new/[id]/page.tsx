@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // Import Zod
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useInnovationsCreateMutation } from "@/redux/features/innovations/innovationsApiSlice";
 import RequireAuth from "@/redux/features/auth/RequireAuth";
 import { FileInput } from "@/components/ui/FileInput";
+import { useInnovationsFetchOneQuery } from "@/redux/features/innovations/innovationsApiSlice";
 
 const isBrowser = typeof window !== "undefined";
 const FileListType = isBrowser ? FileList : Array;
@@ -50,8 +51,29 @@ const InnovationSchema = z.object({
 });
 type Innovation = z.infer<typeof InnovationSchema>;
 
-const InnovationPage = () => {
+interface Params {
+	id: string;
+}
+
+const InnovationPage = ({ params }: { params: Params }) => {
+	const id = parseInt(params.id, 10);
+	console.log(id);
+	const {
+		data: innovationData,
+		isLoading: innovationGetLoading,
+		error,
+	} = useInnovationsFetchOneQuery({ id: id });
+	console.log(innovationData);
+
 	const form = useForm<Innovation>({
+		defaultValues: innovationData
+		? InnovationSchema.parse({
+			title: innovationData.title,
+			description: innovationData.description,
+			category: innovationData.category,
+			status: innovationData.status,
+		})
+		: undefined,
 		resolver: zodResolver(InnovationSchema),
 	});
 
@@ -104,6 +126,7 @@ const InnovationPage = () => {
 										placeholder="Innovation Title"
 										{...field}
 										value={field.value || ""}
+										// defaultValue={innovationData?.title}
 									/>
 								</FormControl>
 								<FormDescription></FormDescription>

@@ -34,12 +34,14 @@ const Home = () => {
 							return(
 								<ProjectCard
 									key={innovation.url}
+									innovation_url={innovation.url}
 									author_avator_image_url={innovation.author.profile_picture}
 									author_first_name={innovation.author.first_name}
 									author_last_name={innovation.author.last_name}
 									project_title={innovation.title}
 									project_description={innovation.description}
 									dashboard_banner_image_url={innovation.banner_image}
+
 								/>)
 						})}
 					</section>

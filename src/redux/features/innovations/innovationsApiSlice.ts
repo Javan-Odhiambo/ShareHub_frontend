@@ -20,12 +20,26 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				category,
 				status,
 				co_authors,
-				dataset,
-			}) => ({
-				url: "/api/innovations/",
-				method: "POST",
-				body: { title, description, category, status, co_authors, dataset },
-			}),
+				banner_image,
+			}) => {
+				const formData = new FormData();
+				formData.append("title", title);
+				formData.append("description", description);
+				formData.append("category", category);
+				formData.append("status", status);
+				formData.append("co_authors", co_authors);
+				if (banner_image instanceof FileList) {
+					formData.append("banner_image", banner_image[0]);
+				} else if (banner_image instanceof File) {
+					formData.append("banner_image", banner_image);
+				}
+
+				return {
+					url: "/api/innovations/",
+					method: "POST",
+					body: formData, // send formData instead of JSON
+				};
+			},
 		}),
 
 		// TODO: Change the route to /api/innnovations/<id>
