@@ -61,6 +61,8 @@ import {
 	useInnovationsDeleteMutation,
 	useInnovationsLikesCreateMutation,
 	useInnovationsBookmarksCreateMutation,
+	useInnovationsUnbookmarkMutation,
+	useInnovationsUnlikeMutation,
 } from "@/redux/features/innovations/innovationsApiSlice";
 import { extractIdFromUrl } from "@/utils/ExtractIdFromUrl";
 import { useRouter } from "next/navigation";
@@ -157,6 +159,26 @@ const ProjectCard = ({
 			})
 			.catch((error) => console.log(error))
 	};
+	//unliking an innovation
+	const [unlikeInnovation, { error:unlikeError }] = useInnovationsUnlikeMutation()
+	const handleUnlike = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		unlikeInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "Removed from your liked innovations",
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				console.log(unlikeError);
+				toast({
+					title: "Something went wrong",
+					description: "There was a problem with your unlike request",
+				});
+			});
+	};
 
 	//bookmarking an innovation
 	const [bookmarkInnovaion , { error:bookmarkError }] = useInnovationsBookmarksCreateMutation()
@@ -174,6 +196,26 @@ const ProjectCard = ({
 				console.log(bookmarkError)
 			})
 	}
+	//unbookmarking an innovation
+	const [unbookmarkInnovation, { error:unbookmarkError }] = useInnovationsUnbookmarkMutation()
+	const handleUnbookmark = () => {
+		const innovationId = extractIdFromUrl(innovation_url);
+		unbookmarkInnovation({ id: innovationId })
+			.unwrap()
+			.then(() => {
+				toast({
+					description: "Removed from your bookmarked innovations",
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				console.log(unbookmarkError);
+				toast({
+					title: "Something went wrong",
+					description: "There was a problem with your unbookmark request",
+				});
+			});
+	};
 	return (
 		<Card className="max-w-[500px]">
 			<div className="p-0 mx-6 flex justify-between items-center">
@@ -313,7 +355,10 @@ const ProjectCard = ({
 			<CardFooter className="flex gap-5 pb-3">
 				<div className="flex flex-1 justify-between">
 					<div className="flex gap-4">
-						<span className="flex" onClick={handleLike}>
+						<span
+							className="flex"
+							onClick={is_liked ? handleUnlike : handleLike}
+							>
 							{is_liked ? (
 								<Heart className="fill-red-500" />
 							) : (
@@ -325,12 +370,15 @@ const ProjectCard = ({
 							<MessageCircle /> {comments_count}{" "}
 						</span>
 					</div>
-					<span className="flex" onClick={handleBookmark}>
-						{" "}
-						{ is_bookmarked 
-							? <Bookmark className="fill-green-600"/> 
-							: <Bookmark />}
-						{" "}
+					<span
+						className="flex"
+						onClick={is_bookmarked ? handleUnbookmark : handleBookmark}
+					>
+						{is_bookmarked ? (
+							<Bookmark className="fill-green-600" />
+						) : (
+							<Bookmark />
+						)}
 					</span>
 				</div>
 				<Link href="/project/id" className="flex-1">
