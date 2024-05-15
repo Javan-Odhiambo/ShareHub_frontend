@@ -64,18 +64,40 @@ const InnovationPage = ({ params }: { params: Params }) => {
 		error,
 	} = useInnovationsFetchOneQuery({ id: id });
 	console.log(innovationData);
-
+	
 	const form = useForm<Innovation>({
-		defaultValues: innovationData
-		? InnovationSchema.parse({
-			title: innovationData.title,
-			description: innovationData.description,
-			category: innovationData.category,
-			status: innovationData.status,
-		})
-		: undefined,
+		defaultValues: {
+			title: "",
+			description: "",
+			category: "",
+			status: "",
+			co_authors: "",
+			banner_image: undefined,
+		},
 		resolver: zodResolver(InnovationSchema),
 	});
+
+useEffect(() => {
+	if (innovationData) {
+		form.reset({
+			...InnovationSchema.omit({
+				banner_image: true,
+				category: true,
+				status: true,
+			}).parse({
+				title: innovationData.title,
+				description: innovationData.description,
+				co_authors: innovationData.co_authors,
+			}),
+			banner_image: undefined, // or set a default value if needed
+		});
+
+		setTimeout(() => {
+			form.setValue("category",innovationData.category);
+			form.setValue("status", innovationData.status);
+		}, 0);
+	}
+}, [innovationData]);
 
 	const [createInovation, { isLoading }] = useInnovationsCreateMutation();
 
