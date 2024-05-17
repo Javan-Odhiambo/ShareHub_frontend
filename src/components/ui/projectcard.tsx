@@ -70,9 +70,9 @@ import { useRouter } from "next/navigation";
 // * interface for project card props
 interface CardProps {
 	innovation_url: string;
-	author_avator_image_url: string;
-	author_first_name: string;
-	author_last_name: string;
+	author_avator_image_url?: string;
+	author_first_name?: string;
+	author_last_name?: string;
 	project_title: string;
 	project_description: string;
 	dashboard_banner_image_url: string;
