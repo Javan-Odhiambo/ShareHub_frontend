@@ -1,5 +1,5 @@
 import { baseApi } from "../baseApi";
-import type { TInnovation, TComment } from "@/lib/types";
+import type { TInnovation, CommentResponse } from "@/lib/types";
 
 const innovationsApiSlice = baseApi.injectEndpoints({
 	overrideExisting: true,
@@ -156,9 +156,10 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		//* COMMENTS
 		// * list innovation comments
-		innovationsCommentsList: builder.query<Comment[], string>({
-			query: (id) => ({
-				url: `/api/innovations/${id}/comments/`,
+		// * list innovation comments
+		innovationsCommentsList: builder.query<CommentResponse,{ id: string; page: number }>({
+			query: ({ id, page }) => ({
+				url: `/api/innovations/${id}/comments/?page=${page}`,
 				method: "GET",
 			}),
 		}),
@@ -244,5 +245,4 @@ export const {
 
 	//* innovation export
 	useInnovationsExportListQuery,
-	
 } = innovationsApiSlice;
