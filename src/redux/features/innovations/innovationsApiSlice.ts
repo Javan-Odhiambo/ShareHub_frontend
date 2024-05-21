@@ -7,8 +7,8 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// * get a list of innovations
 		// TODO define return type of the queries builder.query<Innvations[],void> create innovations type
 		innovationsFetchMany: builder.query({
-			query: () => ({
-				url: "/api/innovations/",
+			query: (page = 1) => ({
+				url: `/api/innovations/?page=${page}`,
 				method: "GET",
 			}),
 		}),
@@ -168,7 +168,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			query: ({ id, message }) => ({
 				url: `/api/innovations/${id}/comments/`,
 				method: "POST",
-				body: {text: message},
+				body: { text: message },
 			}),
 		}),
 
