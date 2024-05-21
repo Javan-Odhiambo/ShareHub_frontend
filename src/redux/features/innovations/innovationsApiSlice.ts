@@ -1,4 +1,5 @@
 import { baseApi } from "../baseApi";
+import type { TInnovation, TComment } from "@/lib/types";
 
 const innovationsApiSlice = baseApi.injectEndpoints({
 	overrideExisting: true,
@@ -44,8 +45,8 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		// TODO: Change the route to /api/innnovations/<id>
 		// * get one of innovations
-		innovationsFetchOne: builder.query({
-			query: ({ id }) => ({
+		innovationsFetchOne: builder.query<TInnovation, string>({
+			query: (id) => ({
 				url: `/api/innovations/${id}/`,
 				method: "GET",
 				// params: { id },
@@ -148,15 +149,15 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		//* Unlike an innovation
 		innovationsUnlike: builder.mutation({
 			query: ({ id }) => ({
-				url: `/api/innovations/${id}/unlikes/`,
+				url: `/api/innovations/${id}/unlike/`,
 				method: "DELETE",
 			}),
 		}),
 
 		//* COMMENTS
 		// * list innovation comments
-		innovationsCommentsList: builder.query({
-			query: ({ id }) => ({
+		innovationsCommentsList: builder.query<Comment[], string>({
+			query: (id) => ({
 				url: `/api/innovations/${id}/comments/`,
 				method: "GET",
 			}),
@@ -164,9 +165,10 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		// * create an innovation comment
 		innovationsCommentsCreate: builder.mutation({
-			query: ({ id }) => ({
+			query: ({ id, message }) => ({
 				url: `/api/innovations/${id}/comments/`,
 				method: "POST",
+				body: {text: message},
 			}),
 		}),
 
