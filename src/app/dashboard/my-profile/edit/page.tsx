@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -16,16 +16,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useProfilesMeQuery, useProfilesUpdateMutation } from "@/redux/features/profile/profileApiSlice";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { FileInput } from "@/components/ui/FileInput";
+
+const isBrowser = typeof window !== "undefined";
+const FileListType = isBrowser ? FileList : Array;
 
 // Define the Schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const profileFormSchema = z.object({
   profile_picture: z
-    .instanceof(File)
+    .instanceof(FileListType)
     .optional()
-    .refine((file) => {
-      return !file || file.size <= MAX_UPLOAD_SIZE;
-    }, "File size must be less than 3MB"),
+    .refine((file) => file == null || file?.length == 1, "File is required."),
+
   // username: z
   //   .string()
   //   .min(2, {
@@ -38,14 +44,46 @@ const profileFormSchema = z.object({
   last_name: z.string().min(2).max(50),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: "The Email Address is required!.",
     })
     .email(),
   phone_number: z.string().min(10).max(13),
   bio: z.string().max(160).min(4),
-  linked_in_url: z.string().url({ message: "Please enter a valid URL." }),
-  x_in_url: z.string().url({ message: "Please enter a valid URL." }),
-  superset_url: z.string().url({ message: "Please enter a valid URL." }),
+  // Optional links
+  linked_in_url: z.string().optional().nullable().refine(value => {
+    if (value === null || value === undefined) {
+      return true; // skip validation if value is null or undefined
+    }
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Invalid URL"),
+  x_in_url: z.string().optional().nullable().refine(value => {
+    if (value === null || value === undefined) {
+      return true; // skip validation if value is null or undefined
+    }
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Invalid URL"),
+  superset_url: z.string().optional().nullable().refine(value => {
+    if (value === null || value === undefined) {
+      return true; // skip validation if value is null or undefined
+    }
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Invalid URL"),
+
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -53,60 +91,79 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function ProfileForm() {
 
-  // This can come from your database or API.
-  const defaultValues: Partial<ProfileFormValues> = {
-    bio: "Hey there I am using ShareHub.",
-    phone_number: "eg +254700000000",
-  };
+  // Create a state to hold profile data
+  const [myProfile, setMyProfile] = useState(null);
+  const [myProfileLoading, setMyProfileLoading] = useState(true);
+  const [myProfileError, setMyProfileError] = useState<FetchBaseQueryError | SerializedError | undefined>(undefined);
 
+  let defaultValues: Partial<ProfileFormValues> = {}
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
-    mode: "onChange",
   });
 
-  const fileRef = form.register("profile_picture");
+  // Fetch the profile data
+  const { data: myProfileData, isLoading: myProfileLoadingData, error: myProfileErrorData } = useProfilesMeQuery(null);
+
+  useEffect(() => {
+    if (myProfileData) {
+      setMyProfile(myProfileData);
+      setMyProfileLoading(myProfileLoadingData);
+      setMyProfileError(myProfileErrorData);
+
+      const { first_name, last_name, email, phone_number, bio, linked_in_url, x_in_url, superset_url } = myProfileData;
+      defaultValues = { first_name, last_name, bio, linked_in_url, x_in_url, superset_url, phone_number, email };
+      form.reset(defaultValues);
+    }
+  }, [myProfileData, myProfileLoadingData, myProfileErrorData]);
+
+  const [updateProfile] = useProfilesUpdateMutation();
 
   const { toast } = useToast();
 
-  function onSubmit(data: ProfileFormValues) {
-    console.log(data);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(data: ProfileFormValues) {
+    // Submit the data to your API or perform any other action
+    console.log(data)
+    updateProfile({ profile_id: myProfileData.id, ...data })
+      .unwrap()
+      .then((response) => {
+        // toast created successfully
+        toast({
+          title: "Profile updated successfully",
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: "An error occured while updating your profile",
+        });
+        console.log(error);
+      });
   }
 
   return (
     <div className="mx-auto  px-5">
       <h1 className="font-semibold text-lg text-center my-5">Edit Profile</h1>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="profile_picture"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Profile Picture</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    // {...fileRef}
-                    onChange={(event) => {
-                      field.onChange(event.target.files?.[0] ?? undefined);
-                    }}
-                  />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* <FormField
+      {
+        myProfileLoading ? <h1>Loading...</h1>
+          :
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"
+              encType="multipart/form-data"
+            >
+              <FormField
+                control={form.control}
+                name="profile_picture"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Profile Picture</FormLabel>
+                    <FormControl>
+                    <FileInput {...form.register("profile_picture")} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
@@ -123,142 +180,160 @@ export default function ProfileForm() {
               </FormItem>
             )}
           /> */}
-          <div className="flex justify-between gap-x-3 flex-wrap">
-            <FormField
-              control={form.control}
-              name="first_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input className="w-80" type="text" placeholder="First Name" {...field} />
-                  </FormControl>
-                  <FormDescription> </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="last_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input className="w-80" type="text" placeholder="Last Name" {...field} />
-                  </FormControl>
-                  <FormDescription> </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex justify-between gap-x-3 flex-wrap">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
+              <div className="flex justify-between gap-x-3 flex-wrap">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input className="w-80" type="text" placeholder="First Name" {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormDescription> </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input className="w-80" type="text" placeholder="Last Name" {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormDescription> </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex justify-between gap-x-3 flex-wrap">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input className="w-80" placeholder="email" {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input className="w-80" type="tel" placeholder="Phone Number" {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
                     <FormControl>
-                      <Input className="w-80" placeholder="email" {...field} />
-                    </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input className="w-80" type="tel" placeholder="Phone Number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bio</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  You can <span>@mention</span> other users and organizations to
-                  link to them.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-between gap-x-3 flex-wrap">
-          <FormField
-              control={form.control}
-              name='superset_url'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Superset Profile URL
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <Textarea
+                        placeholder="Tell us a little bit about yourself"
+                        className="resize-none"
+                        {...field}
+                        value={field.value || ""}
 
-            <FormField
-              control={form.control}
-              name='linked_in_url'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    LinkedIn Profile URL
-                  </FormLabel>
-                  {/* <FormDescription>
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      You can <span>@mention</span> other users and organizations to
+                      link to them.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-between gap-x-3 flex-wrap">
+                <FormField
+                  control={form.control}
+                  name='superset_url'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Superset Profile URL
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='linked_in_url'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        LinkedIn Profile URL
+                      </FormLabel>
+                      {/* <FormDescription>
                       Add links to your linkedIn and X accounts and Superset
                       dashboard.
                     </FormDescription> */}
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='x_in_url'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    X (Formally Twitter) Profile URL
-                  </FormLabel>
+                      <FormControl>
+                        <Input {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='x_in_url'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        X (Formally Twitter) Profile URL
+                      </FormLabel>
 
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <FormControl>
+                        <Input {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          </div>
-          <Button type="submit">Update profile</Button>
-        </form>
-      </Form>
+              </div>
+              <Button type="submit">Update profile</Button>
+            </form>
+          </Form>
+      }
     </div>
-  );
+  )
+
 }
