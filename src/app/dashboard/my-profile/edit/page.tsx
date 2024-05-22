@@ -1,11 +1,9 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,13 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -35,14 +26,14 @@ const profileFormSchema = z.object({
     .refine((file) => {
       return !file || file.size <= MAX_UPLOAD_SIZE;
     }, "File size must be less than 3MB"),
-  username: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
+  // username: z
+  //   .string()
+  //   .min(2, {
+  //     message: "Username must be at least 2 characters.",
+  //   })
+  //   .max(30, {
+  //     message: "Username must not be longer than 30 characters.",
+  //   }),
   first_name: z.string().min(2).max(50),
   last_name: z.string().min(2).max(50),
   email: z
@@ -52,34 +43,26 @@ const profileFormSchema = z.object({
     .email(),
   phone_number: z.string().min(10).max(13),
   bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+  linked_in_url: z.string().url({ message: "Please enter a valid URL." }),
+  x_in_url: z.string().url({ message: "Please enter a valid URL." }),
+  superset_url: z.string().url({ message: "Please enter a valid URL." }),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "Hey there I am using ShareHub.",
-  urls: [{ value: "LinkedIn" }, { value: "X" }],
-  phone_number: "eg +254700000000",
-};
 
 export default function ProfileForm() {
+
+  // This can come from your database or API.
+  const defaultValues: Partial<ProfileFormValues> = {
+    bio: "Hey there I am using ShareHub.",
+    phone_number: "eg +254700000000",
+  };
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: "onChange",
-  });
-
-  const { fields, append } = useFieldArray({
-    name: "urls",
-    control: form.control,
   });
 
   const fileRef = form.register("profile_picture");
@@ -99,7 +82,7 @@ export default function ProfileForm() {
   }
 
   return (
-    <div className="px-10 md:px-20 m-10">
+    <div className="mx-auto  px-5">
       <h1 className="font-semibold text-lg text-center my-5">Edit Profile</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -123,7 +106,7 @@ export default function ProfileForm() {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
@@ -139,8 +122,8 @@ export default function ProfileForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
-          <div className="flex gap-52">
+          /> */}
+          <div className="flex justify-between gap-x-3 flex-wrap">
             <FormField
               control={form.control}
               name="first_name"
@@ -170,21 +153,16 @@ export default function ProfileForm() {
               )}
             />
           </div>
-          <div className="flex gap-52">
+          <div className="flex justify-between gap-x-3 flex-wrap">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
                     <FormControl>
                       <Input className="w-80" placeholder="email" {...field} />
                     </FormControl>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -224,36 +202,59 @@ export default function ProfileForm() {
               </FormItem>
             )}
           />
-          <div>
-            {fields.map((field, index) => (
-              <FormField
-                control={form.control}
-                key={field.id}
-                name={`urls.${index}.value`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className={cn(index !== 0 && "sr-only")}>
-                      URLs
-                    </FormLabel>
-                    <FormDescription className={cn(index !== 0 && "sr-only")}>
+          <div className="flex justify-between gap-x-3 flex-wrap">
+          <FormField
+              control={form.control}
+              name='superset_url'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Superset Profile URL
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='linked_in_url'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    LinkedIn Profile URL
+                  </FormLabel>
+                  {/* <FormDescription>
                       Add links to your linkedIn and X accounts and Superset
                       dashboard.
-                    </FormDescription>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            ))}
-            <Button
-              type="button"
-              className="mt-2"
-              onClick={() => append({ value: "" })}
-            >
-              Add URL
-            </Button>
+                    </FormDescription> */}
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='x_in_url'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    X (Formally Twitter) Profile URL
+                  </FormLabel>
+
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
           </div>
           <Button type="submit">Update profile</Button>
         </form>
