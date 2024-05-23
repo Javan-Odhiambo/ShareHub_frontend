@@ -50,40 +50,10 @@ const profileFormSchema = z.object({
   phone_number: z.string().min(10).max(13),
   bio: z.string().max(160).min(4),
   // Optional links
-  linked_in_url: z.string().optional().nullable().refine(value => {
-    if (value === null || value === undefined) {
-      return true; // skip validation if value is null or undefined
-    }
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
-  }, "Invalid URL"),
-  x_in_url: z.string().optional().nullable().refine(value => {
-    if (value === null || value === undefined) {
-      return true; // skip validation if value is null or undefined
-    }
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
-  }, "Invalid URL"),
-  superset_url: z.string().optional().nullable().refine(value => {
-    if (value === null || value === undefined) {
-      return true; // skip validation if value is null or undefined
-    }
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
-  }, "Invalid URL"),
-
+  // Transform them to empty string if they are not provided
+  linked_in_url: z.string().optional().default(""),
+  x_in_url: z.string().optional().default(""),
+  superset_url: z.string().optional().default(""),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
