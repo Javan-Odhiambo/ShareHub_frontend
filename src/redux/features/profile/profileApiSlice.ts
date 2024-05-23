@@ -94,6 +94,14 @@ const profileApiSlice = baseApi.injectEndpoints({
 				method: "GET",
 			}),
 		}),
+
+		//* get innovations by the logged in user
+		profilesMeInnovations: builder.query({
+			query: () => ({
+				url: "/profiles/me/innovations/",
+				method: "GET",
+			}),
+		}),
 	}),
 });
 
@@ -106,4 +114,5 @@ export const {
 	useProfilesBookmarksListQuery,
 	useProfilesInnovationsListQuery,
 	useProfilesLikesListQuery,
+	useProfilesMeInnovationsQuery,
 } = profileApiSlice;

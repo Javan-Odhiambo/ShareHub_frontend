@@ -3,8 +3,10 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { useProfilesMeQuery } from "@/redux/features/profile/profileApiSlice";
-// import { useInnovations } from "@/redux/features/innovations/innovationsApiSlice";
+import {
+	useProfilesMeQuery,
+	useProfilesMeInnovationsQuery,
+} from "@/redux/features/profile/profileApiSlice";
 import ProjectCard from "@/components/ui/projectcard";
 
 const MyProfilePage = () => {
@@ -14,6 +16,13 @@ const MyProfilePage = () => {
 		error,
 	} = useProfilesMeQuery(null);
 
+	const {
+		data: myInnovationsData,
+		isLoading: myInnovationsIsLoading,
+		error: innovationsError,
+	} = useProfilesMeInnovationsQuery(null);
+
+	console.log(myInnovationsData);
 	return (
 		<main className="pt-6">
 			{myProfileIsLoading ? (
@@ -24,8 +33,7 @@ const MyProfilePage = () => {
 						<Avatar className="h-30 w-30 sm:h-36 sm:w-36 md:h-52 md:w-52 max-h-[200px] max-w-[200px] mx-auto ">
 							<AvatarImage
 								src={
-									myProfileData?.profile_picture ||
-									"/profile-svgrepo-com.svg"
+									myProfileData?.profile_picture || "/profile-svgrepo-com.svg"
 								}
 							/>
 						</Avatar>
@@ -48,6 +56,34 @@ const MyProfilePage = () => {
 				</section>
 			)}
 			<Separator className="" />
+
+			<section className="flex flex-wrap mx-auto gap-4 p-4">
+				{myInnovationsIsLoading ? (
+					<h3 className="text-muted">Getting your innovations </h3>
+				) : (
+					myInnovationsData?.results.map((innovation: any) => {
+						// const { innovation, user } = item;
+						return (
+							<ProjectCard
+								key={innovation.url}
+								innovation_url={innovation.url}
+								// author_avator_image_url={
+								// 	user.profile_picture || "/profile-svgrepo-com.svg"
+								// }
+								// author_first_name={user.first_name}
+								// author_last_name={user.last_name}
+								project_title={innovation.title}
+								project_description={innovation.description}
+								dashboard_banner_image_url={innovation.banner_image}
+								likes_count={innovation.likes_number}
+								comments_count={innovation.comments_number}
+								is_liked={innovation.is_liked}
+								is_bookmarked={innovation.is_bookmarked}
+							/>
+						);
+					})
+				)}
+			</section>
 		</main>
 	);
 };
