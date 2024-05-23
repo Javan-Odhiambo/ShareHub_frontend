@@ -1,4 +1,5 @@
 import { baseApi } from "../baseApi";
+import type { TInnovation, CommentResponse } from "@/lib/types";
 
 const innovationsApiSlice = baseApi.injectEndpoints({
 	overrideExisting: true,
@@ -6,8 +7,8 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		// * get a list of innovations
 		// TODO define return type of the queries builder.query<Innvations[],void> create innovations type
 		innovationsFetchMany: builder.query({
-			query: () => ({
-				url: "/api/innovations/",
+			query: (page = 1) => ({
+				url: `/api/innovations/?page=${page}`,
 				method: "GET",
 			}),
 		}),
@@ -44,8 +45,8 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		// TODO: Change the route to /api/innnovations/<id>
 		// * get one of innovations
-		innovationsFetchOne: builder.query({
-			query: ({ id }) => ({
+		innovationsFetchOne: builder.query<TInnovation, string>({
+			query: (id) => ({
 				url: `/api/innovations/${id}/`,
 				method: "GET",
 				// params: { id },
@@ -148,25 +149,27 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 		//* Unlike an innovation
 		innovationsUnlike: builder.mutation({
 			query: ({ id }) => ({
-				url: `/api/innovations/${id}/unlikes/`,
+				url: `/api/innovations/${id}/unlike/`,
 				method: "DELETE",
 			}),
 		}),
 
 		//* COMMENTS
 		// * list innovation comments
-		innovationsCommentsList: builder.query({
-			query: ({ id }) => ({
-				url: `/api/innovations/${id}/comments/`,
+		// * list innovation comments
+		innovationsCommentsList: builder.query<CommentResponse,{ id: string; page: number }>({
+			query: ({ id, page }) => ({
+				url: `/api/innovations/${id}/comments/?page=${page}`,
 				method: "GET",
 			}),
 		}),
 
 		// * create an innovation comment
 		innovationsCommentsCreate: builder.mutation({
-			query: ({ id }) => ({
+			query: ({ id, message }) => ({
 				url: `/api/innovations/${id}/comments/`,
 				method: "POST",
+				body: { text: message },
 			}),
 		}),
 
@@ -242,5 +245,4 @@ export const {
 
 	//* innovation export
 	useInnovationsExportListQuery,
-	
 } = innovationsApiSlice;

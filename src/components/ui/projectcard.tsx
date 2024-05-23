@@ -55,7 +55,7 @@ import {
 	Trash2,
 	Copy,
 } from "lucide-react";
-import { Separator } from "@radix-ui/react-separator";
+import { useBookmarkInnovation, useLikeInnovation, useUnbookmarkInnovation, useUnlikeInnovation } from "@/lib/hooks";
 import { toast } from "./use-toast";
 import {
 	useInnovationsDeleteMutation,
@@ -95,6 +95,14 @@ const ProjectCard = ({
 	is_liked = false,
 	is_bookmarked = false,
 }: CardProps) => {
+	const innovationId = extractIdFromUrl(innovation_url) as string;
+
+
+	const handleLike = useLikeInnovation(innovationId);
+	const handleUnlike = useUnlikeInnovation(innovationId);
+	const handleBookmark = useBookmarkInnovation(innovationId);
+	const handleUnbookmark = useUnbookmarkInnovation(innovationId);
+
 	const [showShareDialog, setShowShareDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -117,7 +125,7 @@ const ProjectCard = ({
 	//initializing the delete mutation
 	const [deleteInnovation, { isLoading }] = useInnovationsDeleteMutation();
 
-	const innovationId = extractIdFromUrl(innovation_url);
+
 	const handleConfirmDelete = () => {
 		// Perform delete operation here
 		console.log("Project deleted");
@@ -146,76 +154,7 @@ const ProjectCard = ({
 		return router.push(`/dashboard/new/${innovationId}`);
 	};
 
-	//liking an innovation
-	const [likeInnovation, { error:likeError }] = useInnovationsLikesCreateMutation();
-	const handleLike = () => {
-		const innovationId = extractIdFromUrl(innovation_url);
-		likeInnovation({ id: innovationId })
-			.unwrap()
-			.then(() => {
-				toast({
-					description: "added to your liked innovation",
-				});
-			})
-			.catch((error) => console.log(error))
-	};
-	//unliking an innovation
-	const [unlikeInnovation, { error:unlikeError }] = useInnovationsUnlikeMutation()
-	const handleUnlike = () => {
-		const innovationId = extractIdFromUrl(innovation_url);
-		unlikeInnovation({ id: innovationId })
-			.unwrap()
-			.then(() => {
-				toast({
-					description: "Removed from your liked innovations",
-				});
-			})
-			.catch((error) => {
-				console.log(error);
-				console.log(unlikeError);
-				toast({
-					title: "Something went wrong",
-					description: "There was a problem with your unlike request",
-				});
-			});
-	};
 
-	//bookmarking an innovation
-	const [bookmarkInnovaion , { error:bookmarkError }] = useInnovationsBookmarksCreateMutation()
-	const handleBookmark = () =>{
-		const innovationId = extractIdFromUrl(innovation_url)
-		bookmarkInnovaion({ id : innovationId })
-			.unwrap()
-			.then(() =>{
-				toast({
-					description:"added to your bookmarked innovations"
-				})
-			})
-			.catch((error) => {
-				console.log(error)
-				console.log(bookmarkError)
-			})
-	}
-	//unbookmarking an innovation
-	const [unbookmarkInnovation, { error:unbookmarkError }] = useInnovationsUnbookmarkMutation()
-	const handleUnbookmark = () => {
-		const innovationId = extractIdFromUrl(innovation_url);
-		unbookmarkInnovation({ id: innovationId })
-			.unwrap()
-			.then(() => {
-				toast({
-					description: "Removed from your bookmarked innovations",
-				});
-			})
-			.catch((error) => {
-				console.log(error);
-				console.log(unbookmarkError);
-				toast({
-					title: "Something went wrong",
-					description: "There was a problem with your unbookmark request",
-				});
-			});
-	};
 	return (
 		<Card className="max-w-[500px]">
 			<div className="p-0 mx-6 flex justify-between items-center">
@@ -381,7 +320,7 @@ const ProjectCard = ({
 						)}
 					</span>
 				</div>
-				<Link href="/project/id" className="flex-1">
+				<Link href={`/dashboard/innovation/${innovationId}`} className="flex-1">
 					<Button className="w-full rounded-full">View Project</Button>
 				</Link>
 			</CardFooter>

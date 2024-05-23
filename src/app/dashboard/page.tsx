@@ -1,18 +1,45 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useInnovationsFetchManyQuery } from "@/redux/features/innovations/innovationsApiSlice";
 import ProjectCard from "@/components/ui/projectcard";
 import { useToast } from "@/components/ui/use-toast";
+import { PaginationDemo } from "@/components/Pagination";
+
+// * items per page in a response to calculate the total number of paginations needed at the bottom
+const ITEMS_PER_PAGE = 5; // Update this to match the number of items per page in your API
 
 const Home = () => {
-	// * initialize toast
 	const { toast } = useToast();
-	// *getting many innovations , pass null when there are no query parameters
+	const [currentPage, setCurrentPage] = useState(1);
+	const [isClient, setIsClient] = useState(false);
+
+	// * fetching all innovations
 	const {
 		data: innovationsList,
 		isLoading,
 		error,
-	} = useInnovationsFetchManyQuery(null);
+	} = useInnovationsFetchManyQuery(currentPage);
+	
+	// * pagination functions
+	const handlePrevious = () => {
+		if (currentPage > 1) {
+			setCurrentPage(currentPage - 1);
+		}
+	};
+
+	const handleNext = () => {
+		if (currentPage < totalPages) {
+			setCurrentPage(currentPage + 1);
+		}
+	};
+
+	// * to remove shadcn pagination component error
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+
+	const totalPages = Math.ceil(innovationsList?.count / ITEMS_PER_PAGE);
 
 	if (error) {
 		toast({
@@ -21,16 +48,14 @@ const Home = () => {
 		});
 		return;
 	} else {
-		console.log(innovationsList);
-		// todo implement shadcn ui skeleton while loading
-		return (
+		return isClient ? (
 			<div className="w-full">
 				<h1>Home Page</h1>
 				{isLoading ? (
 					<p>Loading..</p>
 				) : (
 					<section className="flex flex-wrap mx-auto gap-4 p-4">
-						{innovationsList.results.map((innovation: any) => {
+						{innovationsList?.results.map((innovation: any) => {
 							return (
 								<ProjectCard
 									key={innovation.url}
@@ -50,7 +75,15 @@ const Home = () => {
 						})}
 					</section>
 				)}
+				<PaginationDemo
+					currentPage={currentPage}
+					totalPages={totalPages}
+					onPrevious={handlePrevious}
+					onNext={handleNext}
+				/>
 			</div>
+		) : (
+			<>Loading</>
 		);
 	}
 };
