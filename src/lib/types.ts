@@ -48,4 +48,20 @@ type CommentResponse = {
 	results: TComment[];
 };
 
-export type { TInnovation , TComment , CommentResponse }
+type TProfile = {
+	url: string;
+	id: number;
+	email: string;
+	first_name: string;
+	last_name: string;
+	phone_number: string;
+	created_at: string;
+	updated_at: string;
+	bio: string;
+	profile_picture: string;
+	linked_in_url: string | null;
+	x_in_url: string | null;
+	superset_url: string | null;
+};
+
+export type { TInnovation, TComment, CommentResponse, TProfile };

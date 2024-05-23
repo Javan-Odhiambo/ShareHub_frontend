@@ -4,6 +4,7 @@ import { useInnovationsFetchManyQuery } from "@/redux/features/innovations/innov
 import ProjectCard from "@/components/ui/projectcard";
 import { useToast } from "@/components/ui/use-toast";
 import { PaginationDemo } from "@/components/Pagination";
+import SearchComponent from "@/components/SearchComponent";
 
 // * items per page in a response to calculate the total number of paginations needed at the bottom
 const ITEMS_PER_PAGE = 5; // Update this to match the number of items per page in your API
@@ -50,7 +51,8 @@ const Home = () => {
 	} else {
 		return isClient ? (
 			<div className="w-full">
-				<h1>Home Page</h1>
+				{/* <h1>Home Page</h1> */}
+				<SearchComponent/>
 				{isLoading ? (
 					<p>Loading..</p>
 				) : (
