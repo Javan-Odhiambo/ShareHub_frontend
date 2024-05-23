@@ -1,6 +1,4 @@
 // Definition of the types used in the application
-
-
 interface TInnovation {
     url: string;
     author: {
@@ -26,11 +24,28 @@ interface TInnovation {
     category: string;
 }
 
-type TComment = {
-    id: string;
-    message: string;
-    created_at: string;
-    updated_at: string;
-}
+type TAuthor = {
+	id: number;
+	email: string;
+	profile_picture: string;
+	username: string;
+	first_name: string;
+	last_name: string;
+};
 
-export type { TInnovation , TComment }
+type TComment = {
+	author: TAuthor;
+	created_at: string;
+	innovation: number;
+	text: string;
+	updated_at: string;
+};
+
+type CommentResponse = {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: TComment[];
+};
+
+export type { TInnovation , TComment , CommentResponse }
