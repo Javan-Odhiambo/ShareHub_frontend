@@ -20,6 +20,8 @@ import { useProfilesMeQuery, useProfilesUpdateMutation } from "@/redux/features/
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { FileInput } from "@/components/ui/FileInput";
+import { Route } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const isBrowser = typeof window !== "undefined";
 const FileListType = isBrowser ? FileList : Array;
@@ -89,6 +91,8 @@ export default function ProfileForm() {
   const [updateProfile] = useProfilesUpdateMutation();
 
   const { toast } = useToast();
+  const router = useRouter();
+
 
   async function onSubmit(data: ProfileFormValues) {
     // Submit the data to your API or perform any other action
@@ -100,6 +104,7 @@ export default function ProfileForm() {
         toast({
           title: "Profile updated successfully",
         });
+        router.push("/dashboard");
       })
       .catch((error) => {
         toast({
