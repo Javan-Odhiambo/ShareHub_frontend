@@ -11,6 +11,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/?page=${page}`,
 				method: "GET",
 			}),
+			providesTags: ["INNOVATIONS"]
 		}),
 
 		// * create an innovation
@@ -41,6 +42,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 					body: formData, // send formData instead of JSON
 				};
 			},
+			invalidatesTags: ["INNOVATIONS"]
 		}),
 
 		// TODO: Change the route to /api/innnovations/<id>
@@ -51,6 +53,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				method: "GET",
 				// params: { id },
 			}),
+			providesTags: ["SINGLE_INNOVATION"],
 		}),
 
 		//? When using it in the form how will we be able to know when to use patch or put
@@ -64,7 +67,6 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 		}),
 
-		// TODO: Change the route to /api/innnovations/<id>
 		// *update an innovation not all fields required
 		innovationsUpdatePatch: builder.mutation({
 			query: ({ id, title, description, category, co_authors }) => ({
@@ -75,7 +77,6 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 		}),
 
-		// TODO: Change the route to /api/innnovations/<id>
 		//* delete an innovation
 		innovationsDelete: builder.mutation({
 			query: ({ id }) => ({
@@ -83,6 +84,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				method: "DELETE",
 				// params: { id },
 			}),
+			invalidatesTags: ["INNOVATIONS", "SINGLE_INNOVATION"]
 		}),
 
 		// TODO: get bookmared innovations: /api/innovations/bookmarks/
@@ -103,6 +105,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: "/api/innovations/bookmarks/",
 				method: "GET",
 			}),
+			providesTags: ['BOOKMARK']
 		}),
 
 		// * bookmark an innovation
@@ -111,6 +114,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/bookmarks/`,
 				method: "POST",
 			}),
+			invalidatesTags: ['BOOKMARK', 'SINGLE_INNOVATION', 'INNOVATIONS']
 		}),
 
 		// * un-bookmark an innovation
@@ -119,6 +123,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/unbookmark/`,
 				method: "DELETE",
 			}),
+			invalidatesTags: ['BOOKMARK', 'SINGLE_INNOVATION', 'INNOVATIONS']
 		}),
 
 		//* LIKING
@@ -128,6 +133,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/likes/`,
 				method: "GET",
 			}),
+
 		}),
 
 		// * GET innovation likes
@@ -144,6 +150,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/likes/`,
 				method: "POST",
 			}),
+			invalidatesTags: ['LIKE', 'SINGLE_INNOVATION', 'INNOVATIONS']
 		}),
 
 		//* Unlike an innovation
@@ -152,6 +159,8 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/unlike/`,
 				method: "DELETE",
 			}),
+			invalidatesTags: ['LIKE', 'SINGLE_INNOVATION', 'INNOVATIONS']
+
 		}),
 
 		//* COMMENTS
@@ -162,6 +171,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/comments/?page=${page}`,
 				method: "GET",
 			}),
+			providesTags: ['COMMENTS']
 		}),
 
 		// * create an innovation comment
@@ -171,6 +181,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				method: "POST",
 				body: { text: message },
 			}),
+			invalidatesTags: ['COMMENTS']
 		}),
 
 		// * Innovations comments read
@@ -239,9 +250,9 @@ export const {
 
 	//* innovation likes
 	useInnovationsLikesCreateMutation,
-	useInnovationsLikesGetQuery,
 	useInnovationsUnlikeMutation,
-	useInnovationsLikesQuery,
+	// useInnovationsLikesGetQuery,
+	// useInnovationsLikesQuery,
 
 	//* innovation export
 	useInnovationsExportListQuery,
