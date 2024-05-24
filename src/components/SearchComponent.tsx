@@ -17,8 +17,8 @@ function SearchComponent() {
 
 	const { data: innovationsResults, isLoading: isLoadingInnovations } =
 		useSearchInnovationsQuery(searchTerm, { skip: !searchClicked });
-	const { data: profilesResults, isLoading: isLoadingProfiles } =
-		useSearchProfilesQuery(searchTerm, { skip: !searchClicked });
+	// const { data: profilesResults, isLoading: isLoadingProfiles } =
+	// 	useSearchProfilesQuery(searchTerm, { skip: !searchClicked });
 
 	const handleSearchChange: ReactEventHandler<HTMLInputElement> = (event) => {
 		setSearchTerm((event.target as HTMLInputElement).value);
@@ -28,11 +28,11 @@ function SearchComponent() {
 		setSearchClicked(true);
 	};
 	// console.log(innovationsResults)
-	if (isLoadingInnovations || isLoadingProfiles) {
+	if (isLoadingInnovations ) {
 		return <p>Loading...</p>;
 	}
 	console.log(innovationsResults);
-	console.log(profilesResults);
+	// console.log(profilesResults);
 	return (
 		<div>
 			<form>
@@ -74,7 +74,7 @@ function SearchComponent() {
 				))}
 			</div>
 			{/* <h2>Profiles</h2> */}
-			<div className="">
+			{/* <div className="">
 				<p>Profile Search results</p>
 				{profilesResults?.profiles.map((profile: TProfile) => (
 					<section
@@ -99,7 +99,7 @@ function SearchComponent() {
 						</div>
 					</section>
 				))}
-			</div>
+			</div> */}
 		</div>
 	);
 }

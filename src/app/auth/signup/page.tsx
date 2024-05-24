@@ -31,8 +31,8 @@ type User = {
 //Define the schema for the form
 const userSchema = z
 	.object({
-		first_name: z.string().min(2).max(50),
-		last_name: z.string().min(2).max(50),
+		// first_name: z.string().min(2).max(50),
+		// last_name: z.string().min(2).max(50),
 		email: z.string().email(),
 		password: z
 			.string()
@@ -88,7 +88,7 @@ const SignUpPage = () => {
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-6"
 				>
-					<FormField
+					{/* <FormField
 						control={form.control}
 						name="first_name"
 						render={({ field }) => (
@@ -123,7 +123,7 @@ const SignUpPage = () => {
 								<FormMessage />
 							</FormItem>
 						)}
-					/>
+					/> */}
 
 					<FormField
 						control={form.control}
