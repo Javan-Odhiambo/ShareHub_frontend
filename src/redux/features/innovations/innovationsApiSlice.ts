@@ -20,20 +20,33 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				description,
 				category,
 				status,
-				co_authors,
 				banner_image,
+				dashboard_link,
+				dashboard_image,
+				dashboard_definition,
 			}) => {
 				const formData = new FormData();
 				formData.append("title", title);
 				formData.append("description", description);
 				formData.append("category", category);
 				formData.append("status", status);
-				formData.append("co_authors", co_authors);
 				if (banner_image instanceof FileList) {
 					formData.append("banner_image", banner_image[0]);
 				} else if (banner_image instanceof File) {
 					formData.append("banner_image", banner_image);
 				}
+				formData.append("dashboard_link", dashboard_link);
+				if (dashboard_image instanceof FileList) {
+					formData.append("banner_image", dashboard_image[0]);
+				} else if (dashboard_image instanceof File) {
+					formData.append("banner_image", dashboard_image);
+				}
+				if (dashboard_definition instanceof FileList) {
+					formData.append("banner_image", dashboard_definition[0]);
+				} else if (dashboard_definition instanceof File) {
+					formData.append("banner_image", dashboard_definition);
+				}
+				
 
 				return {
 					url: "/api/innovations/",
