@@ -192,11 +192,12 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 						<Link href={innovation?.dashboard_link || ""}>
 							<Button className="rounded-full md:px-9"> Visit </Button>
 						</Link>
-
+						<Link download href={innovation.dashboard_definition}>
 						<Button className="rounded-full" variant={"outline"}>
-							{" "}
 							Download Datasets
 						</Button>
+						</Link>
+
 					</div>
 				</div>
 				<div className="flex p-4 my-2 justify-between bg-accent">
