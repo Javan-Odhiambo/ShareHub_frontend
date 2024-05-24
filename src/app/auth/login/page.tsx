@@ -30,13 +30,7 @@ type LoginDetails = {
 //Define the schema for the form
 const loginSchema = z.object({
 	email: z.string().email(),
-	password: z
-		.string()
-		.min(6)
-		.regex(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-			"Password must contain at least one uppercase letter and one digit"
-		),
+	password: z.string()
 });
 
 const LoginPage = () => {
