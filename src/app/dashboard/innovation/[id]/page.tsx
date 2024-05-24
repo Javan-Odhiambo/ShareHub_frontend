@@ -189,7 +189,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 					</div>
 
 					<div className="flex gap-2 md:gap-4">
-						<Link href={""}>
+						<Link href={innovation?.dashboard_link || ""}>
 							<Button className="rounded-full md:px-9"> Visit </Button>
 						</Link>
 
