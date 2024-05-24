@@ -36,7 +36,7 @@ function SearchComponent() {
 	return (
 		<div>
 			<form>
-				<div className="relative flex gap-3">
+				<div className="relative flex gap-3 ">
 					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 					<Input
 						type="search"
@@ -52,7 +52,7 @@ function SearchComponent() {
 			</form>
 			{/* <h1>Search Results</h1>
 			<h2>Innovations</h2> */}
-			<div className="flex gap-2 flex-col max-w-full">
+			<div className="flex gap-2 flex-col max-w-full flex-wrap">
 				<p>Innovation search results</p>
 				{innovationsResults?.innovations.map((innovation: TInnovation) => (
 					<section className="flex flex-wrap mx-auto gap-4 p-4">
