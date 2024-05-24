@@ -37,7 +37,7 @@ const InnovationSchema = z.object({
   description: z.string().min(2),
   category: z.string().min(1).max(3),
   status: z.string().min(1).max(3),
-  co_authors: z.string().min(2).max(50).optional(),
+  // co_authors: z.string().min(2).max(50).optional(),
   banner_image: z
     .instanceof(FileListType)
     .optional()
@@ -119,7 +119,7 @@ const InnovationPage = () => {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="co_authors"
             render={({ field }) => (
@@ -136,7 +136,7 @@ const InnovationPage = () => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <FormField
             control={form.control}
