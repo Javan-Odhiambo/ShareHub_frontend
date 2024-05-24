@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useInnovationsCreateMutation } from "@/redux/features/innovations/innovationsApiSlice";
 import RequireAuth from "@/redux/features/auth/RequireAuth";
 import { FileInput } from "@/components/ui/FileInput";
+import { useRouter } from "next/navigation";
 
 const isBrowser = typeof window !== "undefined";
 const FileListType = isBrowser ? FileList : Array;
@@ -60,6 +61,8 @@ const InnovationSchema = z.object({
 type Innovation = z.infer<typeof InnovationSchema>;
 
 const InnovationPage = () => {
+  const router = useRouter();
+
   const form = useForm<Innovation>({
     resolver: zodResolver(InnovationSchema),
   });
@@ -78,8 +81,10 @@ const InnovationPage = () => {
         // toast created successfully
         toast({
           title: "Innovation Created successfully",
-          description: "You can now view you innovation in your profile",
+					description: "redirecting you to the home page",
         });
+        form.reset();
+				router.push("/dashboard");
         console.log(response);
       })
       .catch((error) => {
