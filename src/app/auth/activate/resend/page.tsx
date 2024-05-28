@@ -18,7 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const resendActivationSchema = z.object({
-	email: z.string().email(),
+	email: z.string({
+		required_error: "Email is required",
+	}).email(),
 });
 
 const Page = () => {

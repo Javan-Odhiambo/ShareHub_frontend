@@ -34,21 +34,24 @@ const FileListType = isBrowser ? FileList : Array;
 //Define the schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const InnovationSchema = z.object({
-  title: z.string().min(2).max(50),
-  description: z.string().min(2),
-  category: z.string().min(1).max(3),
-  status: z.string().min(1).max(3),
-  // co_authors: z.string().min(2).max(50).optional(),
+  title: z.string({
+    required_error: "Title is required",
+  }).min(2).max(50),
+  description: z.string({
+    required_error: "Description is required",
+  }).min(2),
+  status: z.string({
+    required_error: "Status is required",
+  }).min(1).max(3),
   banner_image: z
     .instanceof(FileListType)
     .optional()
     .refine((file) => file == null || file?.length == 1, "File is required."),
-  // .refine((file) => {
-  // 	return !file || file.size <= MAX_UPLOAD_SIZE;
-  // }, "File size must be less than 3MB"),
 
   //banner_image
-  dashboard_link: z.string().url(),
+  dashboard_link: z.string({
+    required_error: "Dashboard Link is required",
+  }).url(),
   dashboard_image: z
     .instanceof(FileListType)
     .optional()
@@ -124,51 +127,6 @@ const InnovationPage = () => {
             )}
           />
 
-          {/* <FormField
-            control={form.control}
-            name="co_authors"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Co Authors</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Co Authors"
-                    {...field}
-                    value={field.value || ""}
-                  />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Cancer">Cancer</SelectItem>
-                    <SelectItem value="H">HIV</SelectItem>
-                    <SelectItem value="COVID-19">COVID-19</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="status"

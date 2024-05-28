@@ -29,8 +29,16 @@ type LoginDetails = {
 
 //Define the schema for the form
 const loginSchema = z.object({
-	email: z.string().email(),
-	password: z.string()
+	email: z.string({
+		required_error: "Email is required",
+	}).email(),
+	password: z.string({
+			required_error: "Password is required",
+		}
+	).min(6, {
+		message: "Password should be at least 6 characters",
+	}
+	)
 });
 
 const LoginPage = () => {

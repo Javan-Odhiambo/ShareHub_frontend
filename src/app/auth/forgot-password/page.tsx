@@ -24,7 +24,9 @@ type ForgotPassword = {
 
 //Define the schema for the form
 const ForgotPasswordShema = z.object({
-	email: z.string().email(),
+	email: z.string({
+		required_error: "Email is required",
+	}).email(),
 });
 
 const ResetPasswordPage = () => {
