@@ -98,49 +98,12 @@ const SignUpPage = () => {
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-6"
 				>
-					{/* <FormField
-						control={form.control}
-						name="first_name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>First Name</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										placeholder="First Name"
-										{...field}
-									/>
-								</FormControl>
-								<FormDescription> </FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="last_name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Last Name</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										placeholder="Last Name"
-										{...field}
-									/>
-								</FormControl>
-								<FormDescription> </FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/> */}
-
 					<FormField
 						control={form.control}
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email </FormLabel>
+								<FormLabel className="required">Email </FormLabel>
 								<FormControl>
 									<Input
 										placeholder="email"
@@ -157,7 +120,7 @@ const SignUpPage = () => {
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Password</FormLabel>
+								<FormLabel className="required">Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"
@@ -176,7 +139,7 @@ const SignUpPage = () => {
 						name="re_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm Password</FormLabel>
+								<FormLabel className="required">Confirm Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"

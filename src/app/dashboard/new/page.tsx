@@ -113,7 +113,7 @@ const InnovationPage = () => {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel className="required">Title</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Innovation Title"
@@ -132,7 +132,7 @@ const InnovationPage = () => {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel className="required">Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -158,7 +158,7 @@ const InnovationPage = () => {
             name="banner_image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Banner image</FormLabel>
+                <FormLabel className="required">Banner image</FormLabel>
                 <FileInput {...form.register("banner_image")} />
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -171,7 +171,7 @@ const InnovationPage = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel className="required">Description</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us more about the Innovation..."
@@ -193,7 +193,7 @@ const InnovationPage = () => {
             name="dashboard_link"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Dashboard Link</FormLabel>
+                <FormLabel className="required">Dashboard Link</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Dashboard Link"

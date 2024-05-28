@@ -67,7 +67,7 @@ const Page = () => {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className="required">Email</FormLabel>
 								<FormControl>
 									<Input
 										type="email"

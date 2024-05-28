@@ -87,7 +87,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 						name="new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>New Password</FormLabel>
+								<FormLabel className="requred">New Password</FormLabel>
 								<FormControl>
 									<Input type="password" placeholder="password" {...field} />
 								</FormControl>
@@ -102,7 +102,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 						name="re_new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm Password</FormLabel>
+								<FormLabel className="required">Confirm Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"

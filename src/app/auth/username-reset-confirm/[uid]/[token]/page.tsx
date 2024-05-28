@@ -88,7 +88,7 @@ const Page = ({ params }: { params: Params }) => {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className="required">Email</FormLabel>
 								<FormControl>
 									<Input type="email" placeholder="email" {...field} />
 								</FormControl>
@@ -103,7 +103,7 @@ const Page = ({ params }: { params: Params }) => {
 						name="re_new_email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm email</FormLabel>
+								<FormLabel className="required">Confirm email</FormLabel>
 								<FormControl>
 									<Input type="email" placeholder="Confirm email" {...field} />
 								</FormControl>
