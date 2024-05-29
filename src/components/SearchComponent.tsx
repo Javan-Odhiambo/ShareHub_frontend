@@ -11,7 +11,9 @@ import { Button } from "./ui/button";
 import ProjectCard from "@/components/ui/projectcard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-function SearchComponent() {
+function SearchComponent({
+	className
+}: { className?:string }) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchClicked, setSearchClicked] = useState(false);
 
@@ -34,10 +36,10 @@ function SearchComponent() {
 	console.log(innovationsResults);
 	// console.log(profilesResults);
 	return (
-		<div>
+		<div className={`${className}`}>
 			<form>
-				<div className="relative flex gap-3 ">
-					<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+				<div className="relative flex">
+					{/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> */}
 					<Input
 						type="search"
 						placeholder="Type here to find ..."
@@ -45,8 +47,12 @@ function SearchComponent() {
 						value={searchTerm}
 						onChange={handleSearchChange}
 					/>
-					<Button variant={"outline"} onClick={handleSearchClick}>
-						Search
+					<Button
+						variant={"outline"}
+						onClick={handleSearchClick}
+						className="flex justify-center items-center"
+					>
+						<Search className="h-5 w-5 text-muted-foreground" />
 					</Button>
 				</div>
 			</form>

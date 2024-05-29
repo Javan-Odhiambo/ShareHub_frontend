@@ -52,7 +52,7 @@ const Home = () => {
 		return isClient ? (
 			<div className="w-full">
 				{/* <h1>Home Page</h1> */}
-				<SearchComponent/>
+				<SearchComponent className="mt-4 self-center content-center ml-4"/>
 				{isLoading ? (
 					<p>Loading..</p>
 				) : (
