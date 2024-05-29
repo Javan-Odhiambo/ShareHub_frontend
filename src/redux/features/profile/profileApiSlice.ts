@@ -1,6 +1,7 @@
 import { baseApi } from "../baseApi";
 
 const profileApiSlice = baseApi.injectEndpoints({
+	overrideExisting: true,
 	endpoints: (builder) => ({
 		// * list all user profiles
 		profilesListAll: builder.query({
@@ -45,6 +46,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 					body: formData,
 				};
 			},
+			invalidatesTags:['PROFILE']
 		}),
 
 		// * get logged in user profie
@@ -53,6 +55,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 				url: "/profiles/me/",
 				method: "GET",
 			}),
+			providesTags:['PROFILE']
 		}),
 
 		// * get specific user profile
@@ -69,6 +72,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 				url: `/profiles/${id}/`,
 				method: "DELETE",
 			}),
+			invalidatesTags:['PROFILE']
 		}),
 
 		// * get profile bookmarks list
@@ -77,6 +81,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 				url: `/profiles/${id}/bookmarks/`,
 				method: "GET",
 			}),
+			providesTags:['BOOKMARK']
 		}),
 
 		// * get profile innovatios list
@@ -85,6 +90,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 				url: `/profiles/${id}/innovations/`,
 				method: "GET",
 			}),
+			providesTags:['INNOVATIONS']
 		}),
 
 		// * get profile likes list
@@ -101,6 +107,7 @@ const profileApiSlice = baseApi.injectEndpoints({
 				url: "/profiles/me/innovations/",
 				method: "GET",
 			}),
+			providesTags:['INNOVATIONS']
 		}),
 	}),
 });
