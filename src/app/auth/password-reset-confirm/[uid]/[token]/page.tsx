@@ -90,7 +90,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 								<FormControl>
 									<Input
 										type="password"
-										placeholder="password"
+										placeholder="*******"
 										{...field}
 									/>
 								</FormControl>
@@ -109,7 +109,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 								<FormControl>
 									<Input
 										type="password"
-										placeholder="Confirm Password"
+										placeholder="*******"
 										{...field}
 									/>
 								</FormControl>

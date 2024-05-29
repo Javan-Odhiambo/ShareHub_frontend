@@ -70,7 +70,7 @@ const ResetPasswordPage = () => {
 								<FormLabel>Email </FormLabel>
 								<FormControl>
 									<Input
-										placeholder="email"
+										placeholder="example@gmail.com"
 										{...field}
 									/>
 								</FormControl>

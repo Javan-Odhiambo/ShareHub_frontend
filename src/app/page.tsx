@@ -64,14 +64,14 @@ export default function LandingPage() {
 				<p className="my-4">Collaborate seamlessly with our data warehouse sharing platform</p>
 				<div className="space-x-4">
 
-					<Button size="lg">
+					<Button variant="outline" className="hover:bg-white hover:text-black" size="lg">
 						<Link className="font-semibold" href='/auth/login'>
 							Login
 						</Link>
 					</Button>
 
-					<Button variant="outline" size="lg" >
-						<Link className="font-semibold" href='/auth/register'>
+					<Button variant="outline" className="hover:bg-white hover:text-black" size="lg" >
+						<Link className="font-semibold" href='/auth/signup'>
 							Register
 						</Link>
 					</Button>

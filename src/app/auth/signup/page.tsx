@@ -38,7 +38,7 @@ const userSchema = z
 		// Your password must contain at least 8 characters.
 		// Your password can’t be entirely numeric.
 		password: z.string().min(8).refine((password) => Number.isNaN(Number(password)), {
-			message: "Your password can’t be entirely numeric."
+			message: "Your password can't be entirely numeric."
 		}),
 
 		re_password: z.string(),
@@ -133,7 +133,7 @@ const SignUpPage = () => {
 								<FormLabel>Email </FormLabel>
 								<FormControl>
 									<Input
-										placeholder="email"
+										placeholder="example@gmail.com"
 										{...field}
 									/>
 								</FormControl>
@@ -151,7 +151,7 @@ const SignUpPage = () => {
 								<FormControl>
 									<Input
 										type="password"
-										placeholder="password"
+										placeholder="*******"
 										{...field}
 									/>
 								</FormControl>
@@ -170,7 +170,7 @@ const SignUpPage = () => {
 								<FormControl>
 									<Input
 										type="password"
-										placeholder="Confirm Password"
+										placeholder="*******"
 										{...field}
 									/>
 								</FormControl>
@@ -182,16 +182,16 @@ const SignUpPage = () => {
 					<Button type="submit">Submit</Button>
 					<Link
 						href="/auth/activate/resend"
-						className="text-sm text-blue-400 block mt-3"
+						className="text-sm text-blue-400 block mt-3 underline"
 					>
-						Didn't Get an activation email?
+						Didn&rsquo;t Get an activation email?
 					</Link>
 					<Link
 						href="/auth/login"
-						className="text-sm text-blue-400 block mt-3"
+						className="text-sm text-blue-400 block mt-3 underline"
 					>
 						Already have an account?
-						<span className="underline text-stone-900 px-1">Login</span>
+						<span className="underline text-white px-1 hover:text-blue-400">Login</span>
 					</Link>
 				</form>
 			</Form>

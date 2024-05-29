@@ -94,7 +94,7 @@ const Page = ({ params }: { params: Params }) => {
 								<FormControl>
 									<Input
 										type="email"
-										placeholder="email"
+										placeholder="example@gmail.com"
 										{...field}
 									/>
 								</FormControl>
@@ -113,7 +113,7 @@ const Page = ({ params }: { params: Params }) => {
 								<FormControl>
 									<Input
 										type="email"
-										placeholder="Confirm email"
+										placeholder="example@gmail.com"
 										{...field}
 									/>
 								</FormControl>
