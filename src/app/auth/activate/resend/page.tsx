@@ -71,7 +71,7 @@ const Page = () => {
 								<FormControl>
 									<Input
 										type="email"
-										placeholder="email"
+										placeholder="example@gmail.com"
 										{...field}
 									/>
 								</FormControl>

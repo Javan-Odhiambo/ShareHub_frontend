@@ -89,7 +89,11 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 							<FormItem>
 								<FormLabel className="requred">New Password</FormLabel>
 								<FormControl>
-									<Input type="password" placeholder="password" {...field} />
+									<Input
+										type="password"
+										placeholder="*******"
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
@@ -106,7 +110,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 								<FormControl>
 									<Input
 										type="password"
-										placeholder="Confirm Password"
+										placeholder="*******"
 										{...field}
 									/>
 								</FormControl>

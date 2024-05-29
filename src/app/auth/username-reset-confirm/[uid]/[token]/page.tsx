@@ -90,7 +90,11 @@ const Page = ({ params }: { params: Params }) => {
 							<FormItem>
 								<FormLabel className="required">Email</FormLabel>
 								<FormControl>
-									<Input type="email" placeholder="email" {...field} />
+									<Input
+										type="email"
+										placeholder="example@gmail.com"
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
@@ -105,7 +109,11 @@ const Page = ({ params }: { params: Params }) => {
 							<FormItem>
 								<FormLabel className="required">Confirm email</FormLabel>
 								<FormControl>
-									<Input type="email" placeholder="Confirm email" {...field} />
+									<Input
+										type="email"
+										placeholder="example@gmail.com"
+										{...field}
+									/>
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />

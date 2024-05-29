@@ -87,7 +87,7 @@ const LoginPage = () => {
 							<FormItem>
 								<FormLabel className="required">Email </FormLabel>
 								<FormControl>
-									<Input placeholder="email" {...field} />
+									<Input placeholder="example@gmail.com" {...field} />
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
@@ -101,7 +101,7 @@ const LoginPage = () => {
 							<FormItem>
 								<FormLabel className="required">Password</FormLabel>
 								<FormControl>
-									<Input type="password" placeholder="password" {...field} />
+									<Input type="password" placeholder="*******" {...field} />
 								</FormControl>
 								<FormDescription> </FormDescription>
 								<FormMessage />
@@ -115,9 +115,9 @@ const LoginPage = () => {
 					>
 						Forgot password ?
 					</Link>
-					<Link href="/auth/signup" className="text-sm text-blue-500 block mt-3">
-						Don't have an account?
-						<span className="underline text-stone-900 px-1">SignUp</span>
+					<Link href="/auth/signup" className="text-sm text-blue-500 underline block mt-3">
+						Don&rsquo;t have an account?
+						<span className="underline text-white hover:text-blue-500 px-1">SignUp</span>
 					</Link>
 				</form>
 			</Form>
