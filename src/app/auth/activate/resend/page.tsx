@@ -18,7 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const resendActivationSchema = z.object({
-	email: z.string().email(),
+	email: z.string({
+		required_error: "Email is required",
+	}).email(),
 });
 
 const Page = () => {
@@ -65,7 +67,7 @@ const Page = () => {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className="required">Email</FormLabel>
 								<FormControl>
 									<Input
 										type="email"

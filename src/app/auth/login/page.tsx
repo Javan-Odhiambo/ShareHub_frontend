@@ -29,8 +29,16 @@ type LoginDetails = {
 
 //Define the schema for the form
 const loginSchema = z.object({
-	email: z.string().email(),
-	password: z.string()
+	email: z.string({
+		required_error: "Email is required",
+	}).email(),
+	password: z.string({
+			required_error: "Password is required",
+		}
+	).min(6, {
+		message: "Password should be at least 6 characters",
+	}
+	)
 });
 
 const LoginPage = () => {
@@ -77,7 +85,7 @@ const LoginPage = () => {
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email </FormLabel>
+								<FormLabel className="required">Email </FormLabel>
 								<FormControl>
 									<Input placeholder="example@gmail.com" {...field} />
 								</FormControl>
@@ -91,7 +99,7 @@ const LoginPage = () => {
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Password</FormLabel>
+								<FormLabel className="required">Password</FormLabel>
 								<FormControl>
 									<Input type="password" placeholder="*******" {...field} />
 								</FormControl>

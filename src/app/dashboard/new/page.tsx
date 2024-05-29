@@ -34,21 +34,24 @@ const FileListType = isBrowser ? FileList : Array;
 //Define the schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const InnovationSchema = z.object({
-  title: z.string().min(2).max(50),
-  description: z.string().min(2),
-  category: z.string().min(1).max(3),
-  status: z.string().min(1).max(3),
-  // co_authors: z.string().min(2).max(50).optional(),
+  title: z.string({
+    required_error: "Title is required",
+  }).min(2).max(50),
+  description: z.string({
+    required_error: "Description is required",
+  }).min(2),
+  status: z.string({
+    required_error: "Status is required",
+  }).min(1).max(3),
   banner_image: z
     .instanceof(FileListType)
     .optional()
     .refine((file) => file == null || file?.length == 1, "File is required."),
-  // .refine((file) => {
-  // 	return !file || file.size <= MAX_UPLOAD_SIZE;
-  // }, "File size must be less than 3MB"),
 
   //banner_image
-  dashboard_link: z.string().url(),
+  dashboard_link: z.string({
+    required_error: "Dashboard Link is required",
+  }).url(),
   dashboard_image: z
     .instanceof(FileListType)
     .optional()
@@ -110,7 +113,7 @@ const InnovationPage = () => {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel className="required">Title</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Innovation Title"
@@ -124,57 +127,12 @@ const InnovationPage = () => {
             )}
           />
 
-          {/* <FormField
-            control={form.control}
-            name="co_authors"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Co Authors</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Co Authors"
-                    {...field}
-                    value={field.value || ""}
-                  />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Cancer">Cancer</SelectItem>
-                    <SelectItem value="H">HIV</SelectItem>
-                    <SelectItem value="COVID-19">COVID-19</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel className="required">Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -200,7 +158,7 @@ const InnovationPage = () => {
             name="banner_image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Banner image</FormLabel>
+                <FormLabel className="required">Banner image</FormLabel>
                 <FileInput {...form.register("banner_image")} />
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -213,7 +171,7 @@ const InnovationPage = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel className="required">Description</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us more about the Innovation..."
@@ -235,7 +193,7 @@ const InnovationPage = () => {
             name="dashboard_link"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Dashboard Link</FormLabel>
+                <FormLabel className="required">Dashboard Link</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Dashboard Link"

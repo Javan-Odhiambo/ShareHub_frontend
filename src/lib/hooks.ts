@@ -1,4 +1,4 @@
-
+"use client"
 
 
 import { toast } from "@/components/ui/use-toast";
@@ -9,6 +9,10 @@ import {
     useInnovationsUnbookmarkMutation,
     useInnovationsUnlikeMutation,
 } from "@/redux/features/innovations/innovationsApiSlice";
+
+import { useProfilesMeQuery } from "@/redux/features/profile/profileApiSlice";
+import { useLogoutMutation } from "@/redux/features/auth/authApiSlice";
+import { useRouter } from "next/navigation";
 
 const useLikeInnovation = (id: string) => {
     //liking an innovation
@@ -94,9 +98,43 @@ const handleUnbookmark = (id: string) => {
 return () => handleUnbookmark(id)
 }
 
+
+// custom hook to fetch the profile of the logged in user
+const useMyProfile = () => {
+    const { data: profile, error } = useProfilesMeQuery(null);
+    return { profile, error };
+}
+
+
+// hook to logout the user
+const useLogout = () => {
+    const router = useRouter();
+    const [logout, { error }] = useLogoutMutation();
+    const handleLogout = () => {
+        logout({})
+            .unwrap()
+            .then(() => {
+                toast({
+                    description: "Logged out successfully",
+                });
+                router.push("auth/login");
+            })
+            .catch((error) => {
+                console.log(error);
+                toast({
+                    title: "Something went wrong",
+                    description: "There was a problem with your logout request",
+                });
+            });
+    };
+
+    return { handleLogout, error };
+}
 export {
     useBookmarkInnovation,
     useLikeInnovation,
     useUnlikeInnovation,
     useUnbookmarkInnovation,
+    useMyProfile,
+    useLogout,
 }

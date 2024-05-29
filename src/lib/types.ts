@@ -13,6 +13,7 @@ interface TInnovation {
     description: string;
     dashboard_link: string;
     dashboard_image: string;
+    dashboard_definition: string;
     banner_image: string;
     comments_number: number;
     likes_number: number;

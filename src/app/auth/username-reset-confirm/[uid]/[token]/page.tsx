@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { useUsersRestEmailConfirmMutation } from "@/redux/features/users/usersApiSlice";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-
 interface Params {
 	uid: string;
 	token: string;
@@ -30,21 +29,23 @@ type ResetEmailConfirm = {
 
 const ResetEmailConfirmSchema = z
 	.object({
-		email: z.string().email(),
-		re_new_email: z.string().email(),
+		email: z
+			.string({
+				required_error: "Email is required",
+			})
+			.email(),
+		re_new_email: z
+			.string({
+				required_error: "Email confirmation is required",
+			})
+			.email(),
 	})
-	.refine(
-		(data) =>
-			data.email === data.re_new_email,
-			{
-				message: "Emails must match",
-				path: ["re_new_email"],
-			}
-	);
+	.refine((data) => data.email === data.re_new_email, {
+		message: "Emails must match",
+		path: ["re_new_email"],
+	});
 
 const Page = ({ params }: { params: Params }) => {
-
-
 	const form = useForm<z.infer<typeof ResetEmailConfirmSchema>>({
 		resolver: zodResolver(ResetEmailConfirmSchema),
 	});
@@ -57,7 +58,7 @@ const Page = ({ params }: { params: Params }) => {
 	const [resetEmailConfirm, { isLoading }] = useUsersRestEmailConfirmMutation();
 
 	// * initializing toast
-	const { toast } = useToast()
+	const { toast } = useToast();
 
 	const onSubmit = (data: z.infer<typeof ResetEmailConfirmSchema>) => {
 		// * submit the data via request;
@@ -81,16 +82,13 @@ const Page = ({ params }: { params: Params }) => {
 		<div className="max-w-[500px] w-[400px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 border py-9 px-4 rounded-2xl">
 			<h1 className="text-xl font-semibold text-center">Reset</h1>
 			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8"
-				>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<FormField
 						control={form.control}
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<FormLabel className="required">Email</FormLabel>
 								<FormControl>
 									<Input
 										type="email"
@@ -109,7 +107,7 @@ const Page = ({ params }: { params: Params }) => {
 						name="re_new_email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm email</FormLabel>
+								<FormLabel className="required">Confirm email</FormLabel>
 								<FormControl>
 									<Input
 										type="email"

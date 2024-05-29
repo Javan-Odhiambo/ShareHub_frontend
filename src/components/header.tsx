@@ -19,8 +19,15 @@ import { Input } from "@/components/ui/input"
 import SidebarNav from '@/components/sidebarNav'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
+interface headerProps {
 
-const Header = () => {
+  avatarUrl?: string;
+  handleLogoutClick?: () => void;
+  handleEditClick?: () => void;
+
+}
+
+const Header = ({ avatarUrl ,handleLogoutClick, handleEditClick } : headerProps ) => {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -53,17 +60,17 @@ const Header = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarImage src={avatarUrl} alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          {/* <DropdownMenuItem>Settings</DropdownMenuItem> */}
+          <DropdownMenuItem onClick={handleEditClick}>Edit Profile</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogoutClick}>
             Logout
           </DropdownMenuItem>
 

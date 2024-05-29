@@ -33,15 +33,25 @@ const userSchema = z
 	.object({
 		// first_name: z.string().min(2).max(50),
 		// last_name: z.string().min(2).max(50),
-		email: z.string().email(),
+		email: z.string(
+			{
+				required_error: "Email is required",
+			}
+		).email(),
 		// passwor field with the following zod schemas
 		// Your password must contain at least 8 characters.
 		// Your password can’t be entirely numeric.
-		password: z.string().min(8).refine((password) => Number.isNaN(Number(password)), {
-			message: "Your password can't be entirely numeric."
+		password: z.string(
+			{
+				required_error: "Password is required",
+			}
+		).min(8).refine((password) => Number.isNaN(Number(password)), {
+			message: "Your password can’t be entirely numeric."
 		}),
 
-		re_password: z.string(),
+		re_password: z.string({
+			required_error: "Password confirmation is required",
+		}),
 	})
 	.refine((data) => data.password === data.re_password, {
 		message: "Passwords don't match",
@@ -88,49 +98,12 @@ const SignUpPage = () => {
 					onSubmit={form.handleSubmit(onSubmit)}
 					className="space-y-6"
 				>
-					{/* <FormField
-						control={form.control}
-						name="first_name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>First Name</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										placeholder="First Name"
-										{...field}
-									/>
-								</FormControl>
-								<FormDescription> </FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="last_name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Last Name</FormLabel>
-								<FormControl>
-									<Input
-										type="text"
-										placeholder="Last Name"
-										{...field}
-									/>
-								</FormControl>
-								<FormDescription> </FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/> */}
-
 					<FormField
 						control={form.control}
 						name="email"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email </FormLabel>
+								<FormLabel className="required">Email </FormLabel>
 								<FormControl>
 									<Input
 										placeholder="example@gmail.com"
@@ -147,7 +120,7 @@ const SignUpPage = () => {
 						name="password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Password</FormLabel>
+								<FormLabel className="required">Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"
@@ -166,7 +139,7 @@ const SignUpPage = () => {
 						name="re_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm Password</FormLabel>
+								<FormLabel className="required">Confirm Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"

@@ -33,13 +33,17 @@ interface Params {
 const ResetPasswordSchema = z
 	.object({
 		new_password: z
-			.string()
+			.string({
+				required_error: "New password is required",
+			})
 			.min(6)
 			.regex(
 				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
 				"Password must contain at least one uppercase letter and one digit"
 			),
-		re_new_password: z.string(),
+		re_new_password: z.string({
+			required_error: "New password confirmation is required",
+		}),
 	})
 	.refine((data) => data.new_password === data.re_new_password, {
 		message: "Passwords don't match",
@@ -77,16 +81,13 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 		<div className="max-w-[500px] w-[400px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 border py-9 px-4 rounded-2xl">
 			<h1 className="text-xl font-semibold text-center">Reset</h1>
 			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-8"
-				>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<FormField
 						control={form.control}
 						name="new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>New Password</FormLabel>
+								<FormLabel className="requred">New Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"
@@ -105,7 +106,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 						name="re_new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Confirm Password</FormLabel>
+								<FormLabel className="required">Confirm Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"
