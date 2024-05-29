@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // Import Zod
@@ -23,10 +24,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { useInnovationsCreateMutation } from "@/redux/features/innovations/innovationsApiSlice";
-import RequireAuth from "@/redux/features/auth/RequireAuth";
 import { FileInput } from "@/components/ui/FileInput";
-import { useInnovationsFetchOneQuery } from "@/redux/features/innovations/innovationsApiSlice";
+
+import {
+	useInnovationsFetchOneQuery,
+	useInnovationsUpdatePatchMutation,
+} from "@/redux/features/innovations/innovationsApiSlice";
+import { TInnovation } from "@/lib/types";
 
 const isBrowser = typeof window !== "undefined";
 const FileListType = isBrowser ? FileList : Array;
@@ -34,20 +38,42 @@ const FileListType = isBrowser ? FileList : Array;
 //Define the schema for the form
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const InnovationSchema = z.object({
-	title: z.string().min(2).max(50),
-	description: z.string().min(2),
-	category: z.string().min(1).max(3),
-	status: z.string().min(1).max(3),
-	co_authors: z.string().min(2).max(50).optional(),
+	title: z
+		.string({
+			required_error: "Title is required",
+		})
+		.min(2)
+		.max(50),
+	description: z
+		.string({
+			required_error: "Description is required",
+		})
+		.min(2),
+	status: z
+		.string({
+			required_error: "Status is required",
+		})
+		.min(1)
+		.max(3),
 	banner_image: z
 		.instanceof(FileListType)
 		.optional()
 		.refine((file) => file == null || file?.length == 1, "File is required."),
-	// .refine((file) => {
-	// 	return !file || file.size <= MAX_UPLOAD_SIZE;
-	// }, "File size must be less than 3MB"),
 
 	//banner_image
+	dashboard_link: z
+		.string({
+			required_error: "Dashboard Link is required",
+		})
+		.url(),
+	dashboard_image: z
+		.instanceof(FileListType)
+		.optional()
+		.refine((file) => file == null || file?.length == 1, "File is required."),
+	dashboard_definition: z
+		.instanceof(FileListType)
+		.optional()
+		.refine((file) => file == null || file?.length == 1, "File is required."),
 });
 type Innovation = z.infer<typeof InnovationSchema>;
 
@@ -56,50 +82,57 @@ interface Params {
 }
 
 const InnovationPage = ({ params }: { params: Params }) => {
-	const id = parseInt(params.id, 10);
-	console.log(id);
+	const id = params.id;
+
 	const {
 		data: innovationData,
-		isLoading: innovationGetLoading,
-		error,
-	} = useInnovationsFetchOneQuery({ id: id });
-	console.log(innovationData);
-	
+		isLoading: innovationDataIsLoading,
+		isError: innovationDataError,
+	} = useInnovationsFetchOneQuery(id);
+
+	const defaultValues: Partial<TInnovation> = {
+		title: innovationData?.title,
+		description: innovationData?.description,
+		status: innovationData?.status,
+		dashboard_link: innovationData?.dashboard_link || "",
+		banner_image: undefined,
+		dashboard_image: undefined,
+		dashboard_definition: undefined,
+	};
+
 	const form = useForm<Innovation>({
 		defaultValues: {
-			title: "",
-			description: "",
-			category: "",
-			status: "",
-			co_authors: "",
-			banner_image: undefined,
+			...defaultValues,
+			banner_image: undefined as FileList | undefined,
+			dashboard_image: undefined as FileList | undefined,
+			dashboard_definition: undefined as FileList | undefined,
 		},
 		resolver: zodResolver(InnovationSchema),
 	});
 
-useEffect(() => {
-	if (innovationData) {
-		form.reset({
-			...InnovationSchema.omit({
-				banner_image: true,
-				category: true,
-				status: true,
-			}).parse({
-				title: innovationData.title,
-				description: innovationData.description,
-				co_authors: innovationData.co_authors,
-			}),
-			banner_image: undefined, // or set a default value if needed
-		});
+	useEffect(() => {
+		if (innovationData) {
+			form.reset({
+				...InnovationSchema.omit({
+					banner_image: true,
+					status: true,
+				}).parse({
+					title: innovationData.title,
+					description: innovationData.description,
+					dashboard_link: innovationData.dashboard_link,
+				}),
+				banner_image: undefined, // or set a default value if needed
+				dashboard_image: undefined,
+				dashboard_definition: undefined,
+			});
 
-		setTimeout(() => {
-			form.setValue("category",innovationData.category);
-			form.setValue("status", innovationData.status);
-		}, 0);
-	}
-}, [innovationData]);
+			setTimeout(() => {
+				form.setValue("status",innovationData.status);
+			}, 0);
+		}
+	}, [innovationData]);
 
-	const [createInovation, { isLoading }] = useInnovationsCreateMutation();
+	const [updateInovation, { isLoading }] = useInnovationsUpdatePatchMutation();
 
 	//initialize toast
 	const { toast } = useToast();
@@ -107,22 +140,27 @@ useEffect(() => {
 	//Function that handles submision of validated data
 	const onSubmit = async (data: Innovation) => {
 		// Submit the data to your API or perform any other action
-		createInovation(data)
+		updateInovation({
+			id: id,
+			...data,
+		})
 			.unwrap()
-			.then((response) => {
-				// toast created successfully
+			.then(() => {
+				// toast updated successfully
 				toast({
-					title: "Innovation Created successfully",
+					title: "Innovation Updated successfully",
 					description: "You can now view you innovation in your profile",
 				});
-				console.log(response);
 			})
 			.catch((error) => {
+				// toast error message
+				toast({
+					title: "Error updating innovation",
+					description: "An error occurred while updating the innovation",
+				});
 				console.log(error);
 			});
 	};
-
-	const fileRef = form.register("banner_image");
 
 	return (
 		// <RequireAuth>
@@ -142,13 +180,12 @@ useEffect(() => {
 						name="title"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Title</FormLabel>
+								<FormLabel className="required">Title</FormLabel>
 								<FormControl>
 									<Input
 										placeholder="Innovation Title"
 										{...field}
 										value={field.value || ""}
-										// defaultValue={innovationData?.title}
 									/>
 								</FormControl>
 								<FormDescription></FormDescription>
@@ -157,57 +194,12 @@ useEffect(() => {
 						)}
 					/>
 
-					<FormField
-						control={form.control}
-						name="co_authors"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Co Authors</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="Co Authors"
-										{...field}
-										value={field.value || ""}
-									/>
-								</FormControl>
-								<FormDescription></FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="category"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Category</FormLabel>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger>
-											<SelectValue placeholder="Select a category" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										<SelectItem value="Cancer">Cancer</SelectItem>
-										<SelectItem value="H">HIV</SelectItem>
-										<SelectItem value="COVID-19">COVID-19</SelectItem>
-									</SelectContent>
-								</Select>
-								<FormDescription></FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
 					<FormField
 						control={form.control}
 						name="status"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Status</FormLabel>
+								<FormLabel className="required">Status</FormLabel>
 								<Select
 									onValueChange={field.onChange}
 									defaultValue={field.value}
@@ -233,7 +225,7 @@ useEffect(() => {
 						name="banner_image"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Banner image</FormLabel>
+								<FormLabel className="required">Banner image</FormLabel>
 								<FileInput {...form.register("banner_image")} />
 								<FormDescription></FormDescription>
 								<FormMessage />
@@ -246,7 +238,7 @@ useEffect(() => {
 						name="description"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Description</FormLabel>
+								<FormLabel className="required">Description</FormLabel>
 								<FormControl>
 									<Textarea
 										placeholder="Tell us more about the Innovation..."
@@ -263,8 +255,53 @@ useEffect(() => {
 						)}
 					/>
 
+					<FormField
+						control={form.control}
+						name="dashboard_link"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className="required">Dashboard Link</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Dashboard Link"
+										{...field}
+										value={field.value || ""}
+									/>
+								</FormControl>
+								<FormDescription></FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="dashboard_image"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Dashboard image</FormLabel>
+								<FileInput {...form.register("dashboard_image")} />
+								<FormDescription></FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
+						name="dashboard_definition"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Dashboard Definition</FormLabel>
+								<FileInput {...form.register("dashboard_definition")} />
+								<FormDescription></FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
 					<Button size={"lg"} type="submit" disabled={isLoading}>
-						Create
+						Update
 					</Button>
 				</form>
 			</Form>

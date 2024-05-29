@@ -11,7 +11,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/?page=${page}`,
 				method: "GET",
 			}),
-			providesTags: ["INNOVATIONS"]
+			providesTags: ["INNOVATIONS"],
 		}),
 
 		// * create an innovation
@@ -25,7 +25,6 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				dashboard_link,
 				dashboard_image,
 				dashboard_definition,
-
 			}) => {
 				const formData = new FormData();
 				formData.append("title", title);
@@ -47,16 +46,16 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				if (dashboard_definition instanceof FileList) {
 					formData.append("dashboard_definition", dashboard_definition[0]);
 				} else if (dashboard_definition instanceof File) {
-					formData.append("dashboard_definitione", dashboard_definition);
+					formData.append("dashboard_definition", dashboard_definition);
 				}
-				
+
 				return {
 					url: "/api/innovations/",
 					method: "POST",
 					body: formData, // send formData instead of JSON
 				};
 			},
-			invalidatesTags: ["INNOVATIONS"]
+			invalidatesTags: ["INNOVATIONS"],
 		}),
 
 		// TODO: Change the route to /api/innnovations/<id>
@@ -83,12 +82,45 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 
 		// *update an innovation not all fields required
 		innovationsUpdatePatch: builder.mutation({
-			query: ({ id, title, description, category, co_authors }) => ({
-				url: `/api/innovations/${id}/`,
-				method: "PATCH",
-				// params: { id },
-				body: { title, description, category, co_authors },
-			}),
+			query: ({
+				id,
+				title,
+				description,
+				status,
+				banner_image,
+				dashboard_link,
+				dashboard_image,
+				dashboard_definition,
+			}) => {
+				const formData = new FormData();
+				formData.append("title", title);
+				formData.append("description", description);
+				formData.append("status", status);
+				formData.append("dashboard_link", dashboard_link);
+
+				if (banner_image instanceof FileList) {
+					formData.append("banner_image", banner_image[0]);
+				} else if (banner_image instanceof File) {
+					formData.append("banner_image", banner_image);
+				}
+				if (dashboard_image instanceof FileList) {
+					formData.append("dashboard_image", dashboard_image[0]);
+				} else if (dashboard_image instanceof File) {
+					formData.append("dashboard_image", dashboard_image);
+				}
+				if (dashboard_definition instanceof FileList) {
+					formData.append("dashboard_definition", dashboard_definition[0]);
+				} else if (dashboard_definition instanceof File) {
+					formData.append("dashboard_definition", dashboard_definition);
+				}
+
+				return {
+					url: `/api/innovations/${id}/`,
+					method: "PATCH",
+					body: formData, // send formData instead of JSON
+				};
+			},
+			invalidatesTags: ["INNOVATIONS"],
 		}),
 
 		//* delete an innovation
@@ -98,7 +130,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				method: "DELETE",
 				// params: { id },
 			}),
-			invalidatesTags: ["INNOVATIONS", "SINGLE_INNOVATION"]
+			invalidatesTags: ["INNOVATIONS", "SINGLE_INNOVATION"],
 		}),
 
 		// TODO: get bookmared innovations: /api/innovations/bookmarks/
@@ -119,7 +151,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: "/api/innovations/bookmarks/",
 				method: "GET",
 			}),
-			providesTags: ['BOOKMARK']
+			providesTags: ["BOOKMARK"],
 		}),
 
 		// * bookmark an innovation
@@ -128,7 +160,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/bookmarks/`,
 				method: "POST",
 			}),
-			invalidatesTags: ['BOOKMARK', 'SINGLE_INNOVATION', 'INNOVATIONS']
+			invalidatesTags: ["BOOKMARK", "SINGLE_INNOVATION", "INNOVATIONS"],
 		}),
 
 		// * un-bookmark an innovation
@@ -137,7 +169,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/unbookmark/`,
 				method: "DELETE",
 			}),
-			invalidatesTags: ['BOOKMARK', 'SINGLE_INNOVATION', 'INNOVATIONS']
+			invalidatesTags: ["BOOKMARK", "SINGLE_INNOVATION", "INNOVATIONS"],
 		}),
 
 		//* LIKING
@@ -147,7 +179,6 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/likes/`,
 				method: "GET",
 			}),
-
 		}),
 
 		// * GET innovation likes
@@ -164,7 +195,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/likes/`,
 				method: "POST",
 			}),
-			invalidatesTags: ['LIKE', 'SINGLE_INNOVATION', 'INNOVATIONS']
+			invalidatesTags: ["LIKE", "SINGLE_INNOVATION", "INNOVATIONS"],
 		}),
 
 		//* Unlike an innovation
@@ -173,19 +204,21 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				url: `/api/innovations/${id}/unlike/`,
 				method: "DELETE",
 			}),
-			invalidatesTags: ['LIKE', 'SINGLE_INNOVATION', 'INNOVATIONS']
-
+			invalidatesTags: ["LIKE", "SINGLE_INNOVATION", "INNOVATIONS"],
 		}),
 
 		//* COMMENTS
 		// * list innovation comments
 		// * list innovation comments
-		innovationsCommentsList: builder.query<CommentResponse,{ id: string; page: number }>({
+		innovationsCommentsList: builder.query<
+			CommentResponse,
+			{ id: string; page: number }
+		>({
 			query: ({ id, page }) => ({
 				url: `/api/innovations/${id}/comments/?page=${page}`,
 				method: "GET",
 			}),
-			providesTags: ['COMMENTS']
+			providesTags: ["COMMENTS"],
 		}),
 
 		// * create an innovation comment
@@ -195,7 +228,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				method: "POST",
 				body: { text: message },
 			}),
-			invalidatesTags: ['COMMENTS']
+			invalidatesTags: ["COMMENTS"],
 		}),
 
 		// * Innovations comments read
