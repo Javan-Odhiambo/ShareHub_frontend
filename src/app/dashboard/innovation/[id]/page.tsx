@@ -71,11 +71,11 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 	const handleUnlike = useUnlikeInnovation(id);
 	const handleBookmark = useBookmarkInnovation(id);
 	const handleUnbookmark = useUnbookmarkInnovation(id);
-	
+
 	const form = useForm<TComment>({
 		resolver: zodResolver(CommentSchema),
 	});
-	
+
 	const [currentPage, setCurrentPage] = useState(1);
 	// Fetch innovation data
 	const {
@@ -89,7 +89,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 		data: commentData,
 		isLoading: isGettingComment,
 		error: errorGettingComments,
-	} = useInnovationsCommentsListQuery({ id:id , page:currentPage });
+	} = useInnovationsCommentsListQuery({ id: id, page: currentPage });
 	console.log(commentData);
 	// extracting comments  from the request
 	const {
@@ -189,14 +189,20 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 					</div>
 
 					<div className="flex gap-2 md:gap-4">
-						<Link href={innovation?.dashboard_link || ""}>
-							<Button className="rounded-full md:px-9"> Visit </Button>
-						</Link>
-						<Link download href={innovation.dashboard_definition}>
-						<Button className="rounded-full" variant={"outline"}>
-							Download Datasets
-						</Button>
-						</Link>
+						{
+							innovation?.dashboard_link &&
+							<Link href={innovation?.dashboard_link || ""}>
+								<Button className="rounded-full md:px-9"> Visit </Button>
+							</Link>
+						}
+						{
+							innovation?.dashboard_definition &&
+							<Link download href={innovation.dashboard_definition}>
+								<Button className="rounded-full" variant={"outline"}>
+									Download Datasets
+								</Button>
+							</Link>
+						}
 
 					</div>
 				</div>
