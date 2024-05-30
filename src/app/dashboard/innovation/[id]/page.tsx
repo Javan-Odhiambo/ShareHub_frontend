@@ -188,21 +188,18 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 					</div>
 
 					<div className="flex gap-2 md:gap-4">
-						{
-							innovation?.dashboard_link &&
+						{innovation?.dashboard_link && (
 							<Link href={innovation?.dashboard_link || ""}>
 								<Button className="rounded-full md:px-9"> Visit </Button>
 							</Link>
-						}
-						{
-							innovation?.dashboard_definition &&
-							<Link download href={innovation.dashboard_definition}>
+						)}
+						{innovation?.dashboard_definitions && (
+							<Link download href={innovation.dashboard_definitions}>
 								<Button className="rounded-full" variant={"outline"}>
 									Download Datasets
 								</Button>
 							</Link>
-						}
-
+						)}
 					</div>
 				</div>
 				<div className="flex p-4 my-2 justify-between bg-accent">
@@ -237,12 +234,12 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 				</div>
 			</section>
 			<section>
-				{innovation?.banner_image ? (
+				{innovation?.dashboard_image ? (
 					<Image
 						alt="Innovation Image"
 						width={500}
 						height={600}
-						src={innovation?.banner_image}
+						src={innovation?.dashboard_image}
 					/>
 				) : (
 					<></>
@@ -325,7 +322,6 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 					onNext={handleNext}
 				/>
 			</section>
-
 		</main>
 	);
 };

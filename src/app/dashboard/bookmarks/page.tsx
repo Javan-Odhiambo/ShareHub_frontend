@@ -1,12 +1,12 @@
-"use client"
-import React from 'react'
-import { useInnovationsBookmarksListQuery } from '@/redux/features/innovations/innovationsApiSlice';
-import ProjectCard from '@/components/ui/projectcard';
+"use client";
+import React from "react";
+import { useInnovationsBookmarksListQuery } from "@/redux/features/innovations/innovationsApiSlice";
+import ProjectCard from "@/components/ui/projectcard";
 const BookmarkPage = () => {
 	const { data: bookmarksList, isLoading: bookmarkIsLoading } =
 		useInnovationsBookmarksListQuery(null);
 	console.log(bookmarksList);
-  return (
+	return (
 		<main>
 			<section className="flex flex-wrap mx-auto gap-4 p-4">
 				{bookmarkIsLoading ? (
@@ -25,7 +25,7 @@ const BookmarkPage = () => {
 								author_last_name={user.last_name}
 								project_title={innovation.title}
 								project_description={innovation.description}
-								dashboard_banner_image_url={innovation.banner_image}
+								dashboard_image_url={innovation.dashboard_image}
 								likes_count={innovation.likes_number}
 								comments_count={innovation.comments_number}
 								is_liked={innovation.is_liked}
@@ -37,6 +37,6 @@ const BookmarkPage = () => {
 			</section>
 		</main>
 	);
-}
+};
 
-export default BookmarkPage
+export default BookmarkPage;

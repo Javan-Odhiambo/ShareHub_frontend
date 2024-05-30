@@ -12,15 +12,17 @@ import ProjectCard from "@/components/ui/projectcard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 type SearchComponentProps = {
-	className?: string,
-	setHasSearchResults: (value: boolean) => void,
-	hasSearchResults: boolean
-}
-function SearchComponent({ className, setHasSearchResults, hasSearchResults }: SearchComponentProps) {
-
+	className?: string;
+	setHasSearchResults: (value: boolean) => void;
+	hasSearchResults: boolean;
+};
+function SearchComponent({
+	className,
+	setHasSearchResults,
+	hasSearchResults,
+}: SearchComponentProps) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchClicked, setSearchClicked] = useState(false);
-
 
 	const { data: innovationsResults, isLoading: isLoadingInnovations } =
 		useSearchInnovationsQuery(searchTerm, { skip: !searchClicked });
@@ -36,17 +38,16 @@ function SearchComponent({ className, setHasSearchResults, hasSearchResults }: S
 	};
 
 	useEffect(() => {
-		if ((searchTerm.length > 0 && searchClicked) ||
-			(innovationsResults && innovationsResults.innovations.length > 0)) {
-
+		if (
+			(searchTerm.length > 0 && searchClicked) ||
+			(innovationsResults && innovationsResults.innovations.length > 0)
+		) {
 			setHasSearchResults(true);
 		}
 		if (searchTerm.length === 0) {
 			setHasSearchResults(false);
 		}
-
 	}, [innovationsResults, searchTerm]);
-
 
 	// console.log(innovationsResults)
 	if (isLoadingInnovations) {
@@ -77,29 +78,31 @@ function SearchComponent({ className, setHasSearchResults, hasSearchResults }: S
 			</form>
 
 			<div className="flex gap-2 flex-col max-w-full flex-wrap">
-				{hasSearchResults &&
+				{hasSearchResults && (
 					<>
 						<p className="text-center">Innovation search results</p>
 						<section className="flex flex-wrap mx-auto gap-4 p-4">
-							{innovationsResults?.innovations.map((innovation: TInnovation) => (
-								<ProjectCard
-									key={innovation.url}
-									innovation_url={innovation.url}
-									author_avator_image_url={innovation.author.profile_image}
-									author_first_name={innovation.author.first_name}
-									author_last_name={innovation.author.last_name}
-									project_title={innovation.title}
-									project_description={innovation.description}
-									dashboard_banner_image_url={innovation.banner_image}
-									likes_count={innovation.likes_number}
-									comments_count={innovation.comments_number}
-									is_liked={innovation.is_liked}
-									is_bookmarked={innovation.is_bookmarked}
-								/>
-							))}
+							{innovationsResults?.innovations.map(
+								(innovation: TInnovation) => (
+									<ProjectCard
+										key={innovation.url}
+										innovation_url={innovation.url}
+										author_avator_image_url={innovation.author.profile_image}
+										author_first_name={innovation.author.first_name}
+										author_last_name={innovation.author.last_name}
+										project_title={innovation.title}
+										project_description={innovation.description}
+										dashboard_image_url={innovation.dashboard_image}
+										likes_count={innovation.likes_number}
+										comments_count={innovation.comments_number}
+										is_liked={innovation.is_liked}
+										is_bookmarked={innovation.is_bookmarked}
+									/>
+								)
+							)}
 						</section>
 					</>
-				}
+				)}
 			</div>
 			{/* <h2>Profiles</h2> */}
 			{/* <div className="">
