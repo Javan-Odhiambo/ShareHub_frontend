@@ -249,6 +249,34 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 					<></>
 				)}
 			</section>
+
+			<section className="px-6 pb-4">
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						<FormField
+							control={form.control}
+							name="message"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Comment</FormLabel>
+									<FormControl>
+										<Textarea placeholder="Type comment here..." {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<Button
+							className="rounded-full"
+							type="submit"
+							size={"lg"}
+							disabled={isCreatingComment}
+						>
+							Submit
+						</Button>
+					</form>
+				</Form>
+			</section>
 			{/* Comments container */}
 			<section className="p-7 space-y-4">
 				{comments?.map((comment, index) => (
@@ -300,33 +328,6 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 				/>
 			</section>
 
-			<section className="px-6 pb-4">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-						<FormField
-							control={form.control}
-							name="message"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Comment</FormLabel>
-									<FormControl>
-										<Textarea placeholder="Type comment here..." {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<Button
-							className="rounded-full"
-							type="submit"
-							size={"lg"}
-							disabled={isCreatingComment}
-						>
-							Submit
-						</Button>
-					</form>
-				</Form>
-			</section>
 		</main>
 	);
 };
