@@ -1,5 +1,5 @@
 "use client";
-import { ReactEventHandler, useState } from "react";
+import { ReactEventHandler, useEffect, useState } from "react";
 import {
 	useSearchInnovationsQuery,
 	useSearchProfilesQuery,
@@ -11,11 +11,16 @@ import { Button } from "./ui/button";
 import ProjectCard from "@/components/ui/projectcard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-function SearchComponent({
-	className
-}: { className?:string }) {
+type SearchComponentProps = {
+	className?: string,
+	setHasSearchResults: (value: boolean) => void,
+	hasSearchResults: boolean
+}
+function SearchComponent({ className, setHasSearchResults, hasSearchResults }: SearchComponentProps) {
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchClicked, setSearchClicked] = useState(false);
+
 
 	const { data: innovationsResults, isLoading: isLoadingInnovations } =
 		useSearchInnovationsQuery(searchTerm, { skip: !searchClicked });
@@ -29,8 +34,22 @@ function SearchComponent({
 	const handleSearchClick = () => {
 		setSearchClicked(true);
 	};
+
+	useEffect(() => {
+		if ((searchTerm.length > 0 && searchClicked) ||
+			(innovationsResults && innovationsResults.innovations.length > 0)) {
+
+			setHasSearchResults(true);
+		}
+		if (searchTerm.length === 0) {
+			setHasSearchResults(false);
+		}
+
+	}, [innovationsResults, searchTerm]);
+
+
 	// console.log(innovationsResults)
-	if (isLoadingInnovations ) {
+	if (isLoadingInnovations) {
 		return <p>Loading...</p>;
 	}
 	console.log(innovationsResults);
@@ -38,8 +57,7 @@ function SearchComponent({
 	return (
 		<div className={`${className}`}>
 			<form>
-				<div className="relative flex">
-					{/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> */}
+				<div className="flex">
 					<Input
 						type="search"
 						placeholder="Type here to find ..."
@@ -48,36 +66,40 @@ function SearchComponent({
 						onChange={handleSearchChange}
 					/>
 					<Button
-						variant={"outline"}
+						variant="outline"
 						onClick={handleSearchClick}
-						className="flex justify-center items-center"
+						className="flex ml-2 items-center"
+						disabled={searchTerm.length === 0}
 					>
 						<Search className="h-5 w-5 text-muted-foreground" />
 					</Button>
 				</div>
 			</form>
-			{/* <h1>Search Results</h1>
-			<h2>Innovations</h2> */}
+
 			<div className="flex gap-2 flex-col max-w-full flex-wrap">
-				<p>Innovation search results</p>
-				{innovationsResults?.innovations.map((innovation: TInnovation) => (
-					<section className="flex flex-wrap mx-auto gap-4 p-4">
-						<ProjectCard
-							key={innovation.url}
-							innovation_url={innovation.url}
-							author_avator_image_url={innovation.author.profile_image}
-							author_first_name={innovation.author.first_name}
-							author_last_name={innovation.author.last_name}
-							project_title={innovation.title}
-							project_description={innovation.description}
-							dashboard_banner_image_url={innovation.banner_image}
-							likes_count={innovation.likes_number}
-							comments_count={innovation.comments_number}
-							is_liked={innovation.is_liked}
-							is_bookmarked={innovation.is_bookmarked}
-						/>
-					</section>
-				))}
+				{hasSearchResults &&
+					<>
+						<p className="text-center">Innovation search results</p>
+						<section className="flex flex-wrap mx-auto gap-4 p-4">
+							{innovationsResults?.innovations.map((innovation: TInnovation) => (
+								<ProjectCard
+									key={innovation.url}
+									innovation_url={innovation.url}
+									author_avator_image_url={innovation.author.profile_image}
+									author_first_name={innovation.author.first_name}
+									author_last_name={innovation.author.last_name}
+									project_title={innovation.title}
+									project_description={innovation.description}
+									dashboard_banner_image_url={innovation.banner_image}
+									likes_count={innovation.likes_number}
+									comments_count={innovation.comments_number}
+									is_liked={innovation.is_liked}
+									is_bookmarked={innovation.is_bookmarked}
+								/>
+							))}
+						</section>
+					</>
+				}
 			</div>
 			{/* <h2>Profiles</h2> */}
 			{/* <div className="">
