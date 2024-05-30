@@ -225,7 +225,8 @@ const ProjectCard = ({
 									</Label>
 									<Input
 										id="link"
-										defaultValue="https://ui.shadcn.com/docs/installation"
+										// TODO: Add the correct link from an evironment variable or something
+										defaultValue={`https://localhost:3000/dashboard/innovation/${innovationId}`}
 										readOnly
 									/>
 								</div>
