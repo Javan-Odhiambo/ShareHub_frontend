@@ -67,7 +67,7 @@ const Home = () => {
 									author_last_name={innovation.author.last_name}
 									project_title={innovation.title}
 									project_description={innovation.description}
-									dashboard_banner_image_url={innovation.banner_image}
+									dashboard_image_url={innovation.dashboard_image}
 									likes_count={innovation.likes_number}
 									comments_count={innovation.comments_number}
 									is_liked={innovation.is_liked}

@@ -1,28 +1,30 @@
 // Definition of the types used in the application
 interface TInnovation {
-    url: string;
-    author: {
-        id: string;
-        email: string;
-        profile_image: string;
-        username: string;
-        first_name: string;
-        last_name: string;
-    }
-    title: string;
-    description: string;
-    dashboard_link: string;
-    dashboard_image: string;
-    dashboard_definition: string;
-    banner_image: string;
-    comments_number: number;
-    likes_number: number;
-    created_at: string;
-    updated_at: string;
-    is_liked: boolean;
-    is_bookmarked: boolean;
-    status: string;
-    category: string;
+	url: string;
+	author: {
+		id: string;
+		email: string;
+		profile_picture: string;
+		username: string;
+		first_name: string;
+		last_name: string;
+	};
+	title: string;
+	description: string;
+	dashboard_link: string;
+	dashboard_image: string;
+	dashboard_definitions: string;
+	dashboard_id: string;
+	// banner_image: string;
+	comments_number: number;
+	likes_number: number;
+	created_at: string;
+	updated_at: string;
+	is_liked: boolean;
+	is_bookmarked: boolean;
+	status: string;
+	dashboard_type: string;
+	// category: string;
 }
 
 type TAuthor = {

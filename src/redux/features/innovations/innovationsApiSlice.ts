@@ -19,34 +19,36 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			query: ({
 				title,
 				description,
-				category,
+				dashboard_type,
 				status,
-				banner_image,
+				// banner_image,
 				dashboard_link,
+				dashboard_id,
 				dashboard_image,
-				dashboard_definition,
+				dashboard_definitions,
 			}) => {
 				const formData = new FormData();
 				formData.append("title", title);
 				formData.append("description", description);
-				formData.append("category", category);
+				formData.append("dashboard_type", dashboard_type);
 				formData.append("status", status);
 				formData.append("dashboard_link", dashboard_link);
+				formData.append("dashboard_id", dashboard_id);
 
-				if (banner_image instanceof FileList) {
-					formData.append("banner_image", banner_image[0]);
-				} else if (banner_image instanceof File) {
-					formData.append("banner_image", banner_image);
-				}
+				// if (banner_image instanceof FileList) {
+				// 	formData.append("banner_image", banner_image[0]);
+				// } else if (banner_image instanceof File) {
+				// 	formData.append("banner_image", banner_image);
+				// }
 				if (dashboard_image instanceof FileList) {
 					formData.append("dashboard_image", dashboard_image[0]);
 				} else if (dashboard_image instanceof File) {
 					formData.append("dashboard_image", dashboard_image);
 				}
-				if (dashboard_definition instanceof FileList) {
-					formData.append("dashboard_definition", dashboard_definition[0]);
-				} else if (dashboard_definition instanceof File) {
-					formData.append("dashboard_definition", dashboard_definition);
+				if (dashboard_definitions instanceof FileList) {
+					formData.append("dashboard_definitions", dashboard_definitions[0]);
+				} else if (dashboard_definitions instanceof File) {
+					formData.append("dashboard_definitions", dashboard_definitions);
 				}
 
 				return {
@@ -87,10 +89,10 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				title,
 				description,
 				status,
-				banner_image,
+				// banner_image,
 				dashboard_link,
 				dashboard_image,
-				dashboard_definition,
+				dashboard_definitions,
 			}) => {
 				const formData = new FormData();
 				formData.append("title", title);
@@ -98,20 +100,20 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				formData.append("status", status);
 				formData.append("dashboard_link", dashboard_link);
 
-				if (banner_image instanceof FileList) {
-					formData.append("banner_image", banner_image[0]);
-				} else if (banner_image instanceof File) {
-					formData.append("banner_image", banner_image);
-				}
+				// if (banner_image instanceof FileList) {
+				// 	formData.append("banner_image", banner_image[0]);
+				// } else if (banner_image instanceof File) {
+				// 	formData.append("banner_image", banner_image);
+				// }
 				if (dashboard_image instanceof FileList) {
 					formData.append("dashboard_image", dashboard_image[0]);
 				} else if (dashboard_image instanceof File) {
 					formData.append("dashboard_image", dashboard_image);
 				}
-				if (dashboard_definition instanceof FileList) {
-					formData.append("dashboard_definition", dashboard_definition[0]);
-				} else if (dashboard_definition instanceof File) {
-					formData.append("dashboard_definition", dashboard_definition);
+				if (dashboard_definitions instanceof FileList) {
+					formData.append("dashboard_definitions", dashboard_definitions[0]);
+				} else if (dashboard_definitions instanceof File) {
+					formData.append("dashboard_definitions", dashboard_definitions);
 				}
 
 				return {

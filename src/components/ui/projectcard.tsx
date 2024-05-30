@@ -55,7 +55,12 @@ import {
 	Trash2,
 	Copy,
 } from "lucide-react";
-import { useBookmarkInnovation, useLikeInnovation, useUnbookmarkInnovation, useUnlikeInnovation } from "@/lib/hooks";
+import {
+	useBookmarkInnovation,
+	useLikeInnovation,
+	useUnbookmarkInnovation,
+	useUnlikeInnovation,
+} from "@/lib/hooks";
 import { toast } from "./use-toast";
 import {
 	useInnovationsDeleteMutation,
@@ -75,11 +80,11 @@ interface CardProps {
 	author_last_name?: string;
 	project_title: string;
 	project_description: string;
-	dashboard_banner_image_url: string;
-	likes_count:number;
-	comments_count:number;
-	is_liked:boolean;
-	is_bookmarked:boolean;
+	dashboard_image_url: string;
+	likes_count: number;
+	comments_count: number;
+	is_liked: boolean;
+	is_bookmarked: boolean;
 }
 
 const ProjectCard = ({
@@ -89,14 +94,13 @@ const ProjectCard = ({
 	author_last_name,
 	project_title,
 	project_description,
-	dashboard_banner_image_url,
+	dashboard_image_url,
 	likes_count,
 	comments_count,
 	is_liked = false,
 	is_bookmarked = false,
 }: CardProps) => {
 	const innovationId = extractIdFromUrl(innovation_url) as string;
-
 
 	const handleLike = useLikeInnovation(innovationId);
 	const handleUnlike = useUnlikeInnovation(innovationId);
@@ -125,7 +129,6 @@ const ProjectCard = ({
 	//initializing the delete mutation
 	const [deleteInnovation, { isLoading }] = useInnovationsDeleteMutation();
 
-
 	const handleConfirmDelete = () => {
 		// Perform delete operation here
 		console.log("Project deleted");
@@ -153,7 +156,6 @@ const ProjectCard = ({
 		const innovationId = extractIdFromUrl(innovation_url);
 		return router.push(`/dashboard/new/${innovationId}`);
 	};
-
 
 	return (
 		<Card className="max-w-[500px]">
@@ -274,7 +276,7 @@ const ProjectCard = ({
 				<div className="flex  flex-col justify-between gap-5">
 					<div className="flex-1">
 						<Image
-							loader={() => dashboard_banner_image_url}
+							loader={() => dashboard_image_url}
 							src="/Image Icon.png"
 							width={450}
 							height={150}
@@ -297,7 +299,7 @@ const ProjectCard = ({
 						<span
 							className="flex"
 							onClick={is_liked ? handleUnlike : handleLike}
-							>
+						>
 							{is_liked ? (
 								<Heart className="fill-red-500" />
 							) : (

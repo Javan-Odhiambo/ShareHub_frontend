@@ -11,9 +11,7 @@ import { Button } from "./ui/button";
 import ProjectCard from "@/components/ui/projectcard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-function SearchComponent({
-	className
-}: { className?:string }) {
+function SearchComponent({ className }: { className?: string }) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchClicked, setSearchClicked] = useState(false);
 
@@ -30,7 +28,7 @@ function SearchComponent({
 		setSearchClicked(true);
 	};
 	// console.log(innovationsResults)
-	if (isLoadingInnovations ) {
+	if (isLoadingInnovations) {
 		return <p>Loading...</p>;
 	}
 	console.log(innovationsResults);
@@ -65,12 +63,12 @@ function SearchComponent({
 						<ProjectCard
 							key={innovation.url}
 							innovation_url={innovation.url}
-							author_avator_image_url={innovation.author.profile_image}
+							author_avator_image_url={innovation.author.profile_picture}
 							author_first_name={innovation.author.first_name}
 							author_last_name={innovation.author.last_name}
 							project_title={innovation.title}
 							project_description={innovation.description}
-							dashboard_banner_image_url={innovation.banner_image}
+							dashboard_image_url={innovation.dashboard_image}
 							likes_count={innovation.likes_number}
 							comments_count={innovation.comments_number}
 							is_liked={innovation.is_liked}

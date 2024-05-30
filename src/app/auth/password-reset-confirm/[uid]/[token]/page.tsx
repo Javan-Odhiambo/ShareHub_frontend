@@ -79,7 +79,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 
 	return (
 		<div className="max-w-[500px] w-[400px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 border py-9 px-4 rounded-2xl">
-			<h1 className="text-xl font-semibold text-center">Reset</h1>
+			<h1 className="text-xl font-semibold text-center">Reset Password</h1>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<FormField
@@ -87,7 +87,7 @@ const ResetPasswordPage = ({ params }: { params: Params }) => {
 						name="new_password"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel className="requred">New Password</FormLabel>
+								<FormLabel className="required">New Password</FormLabel>
 								<FormControl>
 									<Input
 										type="password"

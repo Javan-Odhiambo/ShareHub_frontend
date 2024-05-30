@@ -71,11 +71,11 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 	const handleUnlike = useUnlikeInnovation(id);
 	const handleBookmark = useBookmarkInnovation(id);
 	const handleUnbookmark = useUnbookmarkInnovation(id);
-	
+
 	const form = useForm<TComment>({
 		resolver: zodResolver(CommentSchema),
 	});
-	
+
 	const [currentPage, setCurrentPage] = useState(1);
 	// Fetch innovation data
 	const {
@@ -89,7 +89,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 		data: commentData,
 		isLoading: isGettingComment,
 		error: errorGettingComments,
-	} = useInnovationsCommentsListQuery({ id:id , page:currentPage });
+	} = useInnovationsCommentsListQuery({ id: id, page: currentPage });
 	console.log(commentData);
 	// extracting comments  from the request
 	const {
@@ -174,7 +174,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 				<div className="flex items-center justify-between mt-5 px-4 ">
 					<div className="flex items-center gap-3">
 						<Avatar className="h-12 w-12">
-							<AvatarImage src={innovation?.author.profile_image} />
+							<AvatarImage src={innovation?.author.profile_picture} />
 							<AvatarFallback className="p-2">
 								{get_fallback_name(
 									innovation?.author.first_name,
@@ -192,12 +192,11 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 						<Link href={innovation?.dashboard_link || ""}>
 							<Button className="rounded-full md:px-9"> Visit </Button>
 						</Link>
-						<Link download href={innovation.dashboard_definition}>
-						<Button className="rounded-full" variant={"outline"}>
-							Download Datasets
-						</Button>
+						<Link download href={innovation?.dashboard_definitions || ""}>
+							<Button className="rounded-full" variant={"outline"}>
+								Download Datasets
+							</Button>
 						</Link>
-
 					</div>
 				</div>
 				<div className="flex p-4 my-2 justify-between bg-accent">
@@ -232,12 +231,12 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 				</div>
 			</section>
 			<section>
-				{innovation?.banner_image ? (
+				{innovation?.dashboard_image ? (
 					<Image
 						alt="Innovation Image"
 						width={500}
 						height={600}
-						src={innovation?.banner_image}
+						src={innovation?.dashboard_image}
 					/>
 				) : (
 					<></>
@@ -250,7 +249,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-3">
 								<Avatar className="h-12 w-12">
-									<AvatarImage src="https://github.com/shadcn.png" />
+									<AvatarImage src={comment.author.profile_picture} />
 									<AvatarFallback className="p-2">CN</AvatarFallback>
 								</Avatar>
 								<div>

@@ -55,10 +55,11 @@ const InnovationSchema = z.object({
 		})
 		.min(1)
 		.max(3),
-	banner_image: z
-		.instanceof(FileListType)
-		.optional()
-		.refine((file) => file == null || file?.length == 1, "File is required."),
+	dashboard_type: z.string().min(1).max(3).optional(),
+	// banner_image: z
+	//   .instanceof(FileListType)
+	//   .optional()
+	//   .refine((file) => file == null || file?.length == 1, "File is required."),
 
 	//banner_image
 	dashboard_link: z
@@ -66,11 +67,12 @@ const InnovationSchema = z.object({
 			required_error: "Dashboard Link is required",
 		})
 		.url(),
+	dashboard_id: z.string().url().optional(),
 	dashboard_image: z
 		.instanceof(FileListType)
 		.optional()
 		.refine((file) => file == null || file?.length == 1, "File is required."),
-	dashboard_definition: z
+	dashboard_definitions: z
 		.instanceof(FileListType)
 		.optional()
 		.refine((file) => file == null || file?.length == 1, "File is required."),
@@ -94,18 +96,19 @@ const InnovationPage = ({ params }: { params: Params }) => {
 		title: innovationData?.title,
 		description: innovationData?.description,
 		status: innovationData?.status,
+		dashboard_type:innovationData?.dashboard_type,
 		dashboard_link: innovationData?.dashboard_link || "",
-		banner_image: undefined,
+		// banner_image: undefined,
 		dashboard_image: undefined,
-		dashboard_definition: undefined,
+		dashboard_definitions: undefined,
 	};
 
 	const form = useForm<Innovation>({
 		defaultValues: {
 			...defaultValues,
-			banner_image: undefined as FileList | undefined,
+			// banner_image: undefined as FileList | undefined,
 			dashboard_image: undefined as FileList | undefined,
-			dashboard_definition: undefined as FileList | undefined,
+			dashboard_definitions: undefined as FileList | undefined,
 		},
 		resolver: zodResolver(InnovationSchema),
 	});
@@ -114,20 +117,24 @@ const InnovationPage = ({ params }: { params: Params }) => {
 		if (innovationData) {
 			form.reset({
 				...InnovationSchema.omit({
-					banner_image: true,
+					// banner_image: true,
+					dashboard_image:true,
+					dashboard_definitions:true,
+					dashboard_type:true,
 					status: true,
 				}).parse({
 					title: innovationData.title,
 					description: innovationData.description,
 					dashboard_link: innovationData.dashboard_link,
 				}),
-				banner_image: undefined, // or set a default value if needed
+				// banner_image: undefined, // or set a default value if needed
 				dashboard_image: undefined,
-				dashboard_definition: undefined,
+				dashboard_definitions: undefined,
 			});
 
 			setTimeout(() => {
-				form.setValue("status",innovationData.status);
+				form.setValue("status", innovationData.status);
+				form.setValue('dashboard_type',innovationData.dashboard_type)
 			}, 0);
 		}
 	}, [innovationData]);
@@ -166,7 +173,7 @@ const InnovationPage = ({ params }: { params: Params }) => {
 		// <RequireAuth>
 		<div className="px-5 md:px-20">
 			<h1 className="font-semibold text-lg text-center my-5">
-				Create a New Innovation
+				Edit Innovation
 			</h1>
 
 			<Form {...form}>
@@ -222,16 +229,44 @@ const InnovationPage = ({ params }: { params: Params }) => {
 
 					<FormField
 						control={form.control}
-						name="banner_image"
+						name="dashboard_type"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel className="required">Banner image</FormLabel>
-								<FileInput {...form.register("banner_image")} />
+								<FormLabel>Dashboard Type</FormLabel>
+								<Select
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+								>
+									<FormControl>
+										<SelectTrigger>
+											<SelectValue placeholder="Select innovation type" />
+										</SelectTrigger>
+									</FormControl>
+									<SelectContent>
+										<SelectItem value="S">Superset</SelectItem>
+										<SelectItem value="M">Metabase</SelectItem>
+										<SelectItem value="P">Power BI</SelectItem>
+										<SelectItem value="O">Other</SelectItem>
+									</SelectContent>
+								</Select>
 								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
+
+					{/* <FormField
+            control={form.control}
+            name="banner_image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="required">Banner image</FormLabel>
+                <FileInput {...form.register("banner_image")} />
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
 
 					<FormField
 						control={form.control}
@@ -276,10 +311,29 @@ const InnovationPage = ({ params }: { params: Params }) => {
 
 					<FormField
 						control={form.control}
+						name="dashboard_id"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Dashboard Embed id</FormLabel>
+								<FormControl>
+									<Input
+										placeholder="Dashboard embed id"
+										{...field}
+										value={field.value || ""}
+									/>
+								</FormControl>
+								<FormDescription></FormDescription>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					<FormField
+						control={form.control}
 						name="dashboard_image"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Dashboard image</FormLabel>
+								<FormLabel className="required">Dashboard image</FormLabel>
 								<FileInput {...form.register("dashboard_image")} />
 								<FormDescription></FormDescription>
 								<FormMessage />
@@ -289,11 +343,11 @@ const InnovationPage = ({ params }: { params: Params }) => {
 
 					<FormField
 						control={form.control}
-						name="dashboard_definition"
+						name="dashboard_definitions"
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Dashboard Definition</FormLabel>
-								<FileInput {...form.register("dashboard_definition")} />
+								<FormLabel className="required">Dashboard Definition</FormLabel>
+								<FileInput {...form.register("dashboard_definitions")} />
 								<FormDescription></FormDescription>
 								<FormMessage />
 							</FormItem>
