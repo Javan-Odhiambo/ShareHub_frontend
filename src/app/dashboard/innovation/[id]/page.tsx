@@ -173,7 +173,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 				<div className="flex items-center justify-between mt-5 px-4 ">
 					<div className="flex items-center gap-3">
 						<Avatar className="h-12 w-12">
-							<AvatarImage src={innovation?.author.profile_image} />
+							<AvatarImage src={innovation?.author.profile_picture} />
 							<AvatarFallback className="p-2">
 								{get_fallback_name(
 									innovation?.author.first_name,
@@ -280,8 +280,13 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-3">
 								<Avatar className="h-12 w-12">
-									<AvatarImage src="https://github.com/shadcn.png" />
-									<AvatarFallback className="p-2">CN</AvatarFallback>
+									<AvatarImage src={comment.author.profile_picture} />
+									<AvatarFallback className="p-2">
+										{get_fallback_name(
+											innovation?.author.first_name,
+											innovation?.author.last_name
+										)}
+									</AvatarFallback>
 								</Avatar>
 								<div>
 									<p>
