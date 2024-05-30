@@ -156,9 +156,8 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 						<DropdownMenuContent className="w-56">
 							<DropdownMenuItem>
 								<SquarePen className="mr-2 h-4 w-4" />
-								<Link href={""}>
-									{" "}
-									{/*TODO: Add edit page link */}
+								{/* TODO: URL generator */}
+								<Link href={`/dashboard/innovation/edit/${id}`}>
 									<span>Edit</span>
 								</Link>
 							</DropdownMenuItem>
@@ -301,14 +300,13 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
 									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="w-56">
-									<DropdownMenuItem>
+									{/* <DropdownMenuItem>
 										<SquarePen className="mr-2 h-4 w-4" />
+										// TODO: Comment Editing
 										<Link href={""}>
-											{" "}
-											{/*TODO: Add edit page link */}
 											<span>Edit</span>
 										</Link>
-									</DropdownMenuItem>
+									</DropdownMenuItem> */}
 									<DropdownMenuItem className="hover:bg-destructive active:bg-destructive focus:bg-destructive hover:text-white active:text-white focus:text-white">
 										<Trash2 className="mr-2 h-4 w-4" />
 										<span>Delete</span>

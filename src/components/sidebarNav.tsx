@@ -24,7 +24,7 @@ const SidebarNav = () => {
             label: "Home"
         },
         {
-            href: "/dashboard/new",
+            href: "/dashboard/innovation/new",
             icon: Plus,
             label: "New Project"
         },

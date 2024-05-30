@@ -195,16 +195,8 @@ const ProjectCard = ({
 						<DropdownMenuItem onSelect={handleEditClick}>
 							<SquarePen className="mr-2 h-4 w-4" />
 							<Link
-								href={{
-									pathname: "/dashboard/new",
-									query: {
-										id: innovationId,
-									},
-								}}
+								href={`/dashboard/innovation/edit/${innovationId}`}
 							>
-								{" "}
-								{/*TODO: Add edit page link */}
-								{/* <span>Edit</span> */}
 								Edit
 							</Link>
 						</DropdownMenuItem>
