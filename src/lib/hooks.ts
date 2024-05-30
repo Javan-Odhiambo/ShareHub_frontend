@@ -117,7 +117,7 @@ const useLogout = () => {
                 toast({
                     description: "Logged out successfully",
                 });
-                router.push("auth/login");
+                router.push("/auth/login");
             })
             .catch((error) => {
                 console.log(error);
