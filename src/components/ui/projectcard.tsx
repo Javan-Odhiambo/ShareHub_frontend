@@ -76,10 +76,10 @@ interface CardProps {
 	project_title: string;
 	project_description: string;
 	dashboard_banner_image_url: string;
-	likes_count:number;
-	comments_count:number;
-	is_liked:boolean;
-	is_bookmarked:boolean;
+	likes_count: number;
+	comments_count: number;
+	is_liked: boolean;
+	is_bookmarked: boolean;
 }
 
 const ProjectCard = ({
@@ -109,6 +109,13 @@ const ProjectCard = ({
 	const handleShareClick = () => {
 		setShowShareDialog(true);
 	};
+
+	const handleCopyClick = () => {
+		navigator.clipboard.writeText(innovationDetailURL);
+		toast({
+			title: "Link copied to clipboard",
+		});
+	}
 
 	const handleCloseShareDialog = () => {
 		setShowShareDialog(false);
@@ -153,6 +160,8 @@ const ProjectCard = ({
 		const innovationId = extractIdFromUrl(innovation_url);
 		return router.push(`/dashboard/new/${innovationId}`);
 	};
+
+	const innovationDetailURL = `http://localhost:3000/dashboard/innovation/${innovationId}`
 
 
 	return (
@@ -226,11 +235,11 @@ const ProjectCard = ({
 									<Input
 										id="link"
 										// TODO: Add the correct link from an evironment variable or something
-										defaultValue={`https://localhost:3000/dashboard/innovation/${innovationId}`}
+										defaultValue={innovationDetailURL}
 										readOnly
 									/>
 								</div>
-								<Button type="submit" size="sm" className="px-3">
+								<Button size="sm" className="px-3" onClick={handleCopyClick}>
 									<span className="sr-only">Copy</span>
 									<Copy className="h-4 w-4" />
 								</Button>
@@ -298,7 +307,7 @@ const ProjectCard = ({
 						<span
 							className="flex"
 							onClick={is_liked ? handleUnlike : handleLike}
-							>
+						>
 							{is_liked ? (
 								<Heart className="fill-red-500" />
 							) : (
