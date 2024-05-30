@@ -81,7 +81,7 @@ interface Params {
 	id: string;
 }
 
-const InnovationPage = ({ params }: { params: Params }) => {
+const EditInnovationPage = ({ params }: { params: Params }) => {
 	const id = params.id;
 
 	const {
@@ -310,4 +310,4 @@ const InnovationPage = ({ params }: { params: Params }) => {
 	);
 };
 
-export default InnovationPage;
+export default EditInnovationPage;

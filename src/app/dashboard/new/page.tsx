@@ -63,7 +63,7 @@ const InnovationSchema = z.object({
 });
 type Innovation = z.infer<typeof InnovationSchema>;
 
-const InnovationPage = () => {
+const CreateInnovationPage = () => {
   const router = useRouter();
 
   const form = useForm<Innovation>({
@@ -84,10 +84,10 @@ const InnovationPage = () => {
         // toast created successfully
         toast({
           title: "Innovation Created successfully",
-					description: "redirecting you to the home page",
+          description: "redirecting you to the home page",
         });
         form.reset();
-				router.push("/dashboard");
+        router.push("/dashboard");
         console.log(response);
       })
       .catch((error) => {
@@ -243,4 +243,4 @@ const InnovationPage = () => {
   );
 };
 
-export default InnovationPage;
+export default CreateInnovationPage;
