@@ -161,7 +161,7 @@ const ProjectCard = ({
 	const router = useRouter();
 	const handleEditClick = () => {
 		const innovationId = extractIdFromUrl(innovation_url);
-		return router.push(`/dashboard/new/${innovationId}`);
+		return router.push(`/dashboard/innovation/edit/${innovationId}`);
 	};
 
 	const innovationDetailURL = `http://localhost:3000/dashboard/innovation/${innovationId}`;
