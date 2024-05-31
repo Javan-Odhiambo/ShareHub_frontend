@@ -22,6 +22,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				status,
 				// banner_image,
 				dashboard_link,
+				dashboard_id,
 				dashboard_type,
 				dashboard_image,
 				dashboard_definitions,
@@ -32,6 +33,7 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 				formData.append("status", status);
 				formData.append("dashboard_link", dashboard_link);
 				formData.append("dashboard_type", dashboard_type);
+				formData.append("dashboard_id", dashboard_id);
 
 				// if (banner_image instanceof FileList) {
 				// 	formData.append("banner_image", banner_image[0]);
