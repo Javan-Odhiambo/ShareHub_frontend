@@ -63,7 +63,7 @@ const InnovationSchema = z.object({
 			required_error: "Dashboard Link is required",
 		})
 		.url(),
-	dashboard_id: z.string().url().optional(),
+	dashboard_id: z.string().optional(),
 	dashboard_image: z
 		.instanceof(FileListType)
 		.optional()
