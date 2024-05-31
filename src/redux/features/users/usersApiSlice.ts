@@ -8,14 +8,12 @@ const usersApiSlice = baseApi.injectEndpoints({
 		users: builder.mutation({
 			query: ({
 				email,
-				first_name,
-				last_name,
 				password,
 				re_password,
 			}) => ({
 				url: "/auth/users/",
 				method: "POST",
-				body: { email, first_name, last_name, password, re_password },
+				body: { email, password, re_password },
 			}),
 		}),
 
