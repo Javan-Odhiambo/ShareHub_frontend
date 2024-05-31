@@ -38,6 +38,10 @@ const SidebarNav = () => {
             icon: Bookmark,
             label: "Bookmarks"
         },
+        {
+            href: "/dashboard/innovation/drafts",
+            label: "Drafts"
+        }
     ]
 
     return (
@@ -53,7 +57,7 @@ const SidebarNav = () => {
                             : "text-muted-foreground hover:text-foreground"
                     }`}
                 >
-                    <link.icon className="h-5 w-5" />
+                    {link.icon && <link.icon className="h-5 w-5" />}
                     {link.label}
                 </Link>
             ))}

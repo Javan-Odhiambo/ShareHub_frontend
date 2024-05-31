@@ -64,13 +64,11 @@ import {
 import { toast } from "./use-toast";
 import {
 	useInnovationsDeleteMutation,
-	useInnovationsLikesCreateMutation,
-	useInnovationsBookmarksCreateMutation,
-	useInnovationsUnbookmarkMutation,
-	useInnovationsUnlikeMutation,
+	useInnovationsDraftPublishMutation
 } from "@/redux/features/innovations/innovationsApiSlice";
 import { extractIdFromUrl } from "@/utils/ExtractIdFromUrl";
 import { useRouter } from "next/navigation";
+
 
 // * interface for project card props
 interface CardProps {
@@ -85,6 +83,7 @@ interface CardProps {
 	comments_count: number;
 	is_liked: boolean;
 	is_bookmarked: boolean;
+	status: "D" | "P"
 }
 
 const ProjectCard = ({
@@ -99,6 +98,7 @@ const ProjectCard = ({
 	comments_count,
 	is_liked = false,
 	is_bookmarked = false,
+	status
 }: CardProps) => {
 	const innovationId = extractIdFromUrl(innovation_url) as string;
 
@@ -135,6 +135,7 @@ const ProjectCard = ({
 
 	//initializing the delete mutation
 	const [deleteInnovation, { isLoading }] = useInnovationsDeleteMutation();
+	const [publishInnovation, { isLoading: isPublishing }] = useInnovationsDraftPublishMutation()
 
 	const handleConfirmDelete = () => {
 		// Perform delete operation here
@@ -165,6 +166,23 @@ const ProjectCard = ({
 	};
 
 	const innovationDetailURL = `http://localhost:3000/dashboard/innovation/${innovationId}`;
+
+	const isDraft = status === "D";
+
+	const handlePublish = () => {
+		publishInnovation(innovationId)
+		.unwrap()
+		.then(() => {
+			toast({
+				title:"Project published successfully"
+			})
+		})
+		.catch((error) => {
+			toast({
+				title: "Something went wrong"
+			})
+		})
+	}
 
 	return (
 		<Card className="max-w-[500px]">
@@ -294,37 +312,49 @@ const ProjectCard = ({
 				</div>
 			</CardContent>
 			<CardFooter className="flex gap-5 pb-3">
-				<div className="flex flex-1 justify-between">
-					<div className="flex gap-4">
-						<span
-							className="flex"
-							onClick={is_liked ? handleUnlike : handleLike}
-						>
-							{is_liked ? (
-								<Heart className="fill-red-500" />
-							) : (
-								<Heart className="hover:fill-red-500" />
-							)}{" "}
-							{likes_count}
-						</span>
-						<span className="flex">
-							<MessageCircle /> {comments_count}{" "}
-						</span>
-					</div>
-					<span
-						className="flex"
-						onClick={is_bookmarked ? handleUnbookmark : handleBookmark}
-					>
-						{is_bookmarked ? (
-							<Bookmark className="fill-green-600" />
-						) : (
-							<Bookmark />
-						)}
-					</span>
-				</div>
-				<Link href={`/dashboard/innovation/${innovationId}`} className="flex-1">
-					<Button className="w-full rounded-full">View Project</Button>
-				</Link>
+
+				{
+					!isDraft ?
+						<div className="flex flex-1 justify-between">
+							<div className="flex gap-4">
+								<span
+									className="flex"
+									onClick={is_liked ? handleUnlike : handleLike}
+								>
+									{is_liked ? (
+										<Heart className="fill-red-500" />
+									) : (
+										<Heart className="hover:fill-red-500" />
+									)}{" "}
+									{likes_count}
+								</span>
+								<span className="flex">
+									<MessageCircle /> {comments_count}{" "}
+								</span>
+							</div>
+							<span
+								className="flex"
+								onClick={is_bookmarked ? handleUnbookmark : handleBookmark}
+							>
+								{is_bookmarked ? (
+									<Bookmark className="fill-green-600" />
+								) : (
+									<Bookmark />
+								)}
+							</span>
+						</div>
+						:
+						<></>
+				}
+
+				{
+					!isDraft ?
+						<Link href={`/dashboard/innovation/${innovationId}`} className="flex-1">
+							<Button className="w-full rounded-full">View Project</Button>
+						</Link>
+						:
+						<Button onClick={handlePublish} className="my-2 rounded-full">Publish</Button>
+				}
 			</CardFooter>
 		</Card>
 	);

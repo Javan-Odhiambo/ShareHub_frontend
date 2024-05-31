@@ -136,6 +136,25 @@ const innovationsApiSlice = baseApi.injectEndpoints({
 			}),
 			invalidatesTags: ["INNOVATIONS", "SINGLE_INNOVATION"],
 		}),
+		// * Drafts
+		// * list drafted innovations
+		innovationsDraftsList: builder.query({
+			query: () => ({
+				url: "/profiles/me/drafts/",
+				method: "GET",
+			}),
+			providesTags: ["DRAFTS"],
+		}),
+
+		// * Drafts
+		// * publish draft innovation
+		innovationsDraftPublish: builder.mutation({
+			query: ( id:string ) => ({
+				url: `/profiles/me/drafts/${id}/publish/`,
+				method: "POST",
+			}),
+			invalidatesTags: ["DRAFTS", "INNOVATIONS"],
+		}),
 
 		// TODO: get bookmared innovations: /api/innovations/bookmarks/
 		// TODO: like an innovation : /api/innovations/<id>/like/
@@ -285,6 +304,10 @@ export const {
 	useInnovationsFetchOneQuery,
 	useInnovationsUpdatePatchMutation,
 	useInnovationsUpdatePutMutation,
+
+	// Innovation draft
+	useInnovationsDraftsListQuery,
+	useInnovationsDraftPublishMutation,
 
 	//* innovation bookmarks
 	useInnovationsBookmarksCreateMutation,
