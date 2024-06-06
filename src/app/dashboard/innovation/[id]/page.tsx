@@ -2,63 +2,65 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-	Form,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormControl,
-	FormMessage,
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-	Bookmark,
-	EllipsisVertical,
-	Heart,
-	MessageCircle,
-	Share2,
-	SquarePen,
-	Trash2,
+  Bookmark,
+  EllipsisVertical,
+  Heart,
+  MessageCircle,
+  Share2,
+  SquarePen,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Image from "next/image";
 import {
-	useInnovationsFetchOneQuery,
-	useInnovationsCommentsCreateMutation,
-	useInnovationsCommentsListQuery,
-	useInnovationsCommentsDeleteMutation,
-	useInnovationsCommentsUpdatePatchMutation,
-	useInnovationsCommentsUpdatePutMutation,
-	useInnovationsCommentsReadQuery,
+  useInnovationsFetchOneQuery,
+  useInnovationsCommentsCreateMutation,
+  useInnovationsCommentsListQuery,
+  useInnovationsCommentsDeleteMutation,
+  useInnovationsCommentsUpdatePatchMutation,
+  useInnovationsCommentsUpdatePutMutation,
+  useInnovationsCommentsReadQuery,
 } from "@/redux/features/innovations/innovationsApiSlice";
 import { get_fallback_name } from "@/lib/utils";
 import {
-	useBookmarkInnovation,
-	useLikeInnovation,
-	useUnbookmarkInnovation,
-	useUnlikeInnovation,
+  useBookmarkInnovation,
+  useLikeInnovation,
+  useUnbookmarkInnovation,
+  useUnlikeInnovation,
 } from "@/lib/hooks";
 import { PaginationDemo } from "@/components/Pagination";
+import { embedDashboard } from "@superset-ui/embedded-sdk";
+import axios from 'axios';
 
 type InnovationDetailPageProps = {
-	params: {
-		id: string;
-	};
+  params: {
+    id: string;
+  };
 };
 
 const CommentSchema = z.object({
-	message: z.string().min(2).max(255),
+  message: z.string().min(2).max(255),
 });
 
 type TComment = z.infer<typeof CommentSchema>;
@@ -66,269 +68,383 @@ type TComment = z.infer<typeof CommentSchema>;
 const commentsPerPage = 5;
 
 const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
-	const { id } = params;
-	const handleLike = useLikeInnovation(id);
-	const handleUnlike = useUnlikeInnovation(id);
-	const handleBookmark = useBookmarkInnovation(id);
-	const handleUnbookmark = useUnbookmarkInnovation(id);
+  const { id } = params;
+  const handleLike = useLikeInnovation(id);
+  const handleUnlike = useUnlikeInnovation(id);
+  const handleBookmark = useBookmarkInnovation(id);
+  const handleUnbookmark = useUnbookmarkInnovation(id);
 
-	const form = useForm<TComment>({
-		resolver: zodResolver(CommentSchema),
-	});
+  const form = useForm<TComment>({
+    resolver: zodResolver(CommentSchema),
+  });
 
-	const [currentPage, setCurrentPage] = useState(1);
-	// Fetch innovation data
-	const {
-		data: innovation,
-		isLoading: isGettingInnovation,
-		error: errorGettingInnovation,
-	} = useInnovationsFetchOneQuery(id);
-	const [createComment, { isLoading: isCreatingComment }] =
-		useInnovationsCommentsCreateMutation();
-	const {
-		data: commentData,
-		isLoading: isGettingComment,
-		error: errorGettingComments,
-	} = useInnovationsCommentsListQuery({ id: id, page: currentPage });
-	console.log(commentData);
-	// extracting comments  from the request
-	const {
-		results: comments,
-		next: nextCommentPage,
-		previous: previousCommentPage,
-		count: totalComments,
-	} = commentData || {};
+  const [currentPage, setCurrentPage] = useState(1);
+  // Fetch innovation data
+  const {
+    data: innovation,
+    isLoading: isGettingInnovation,
+    error: errorGettingInnovation,
+  } = useInnovationsFetchOneQuery(id);
+  const [createComment, { isLoading: isCreatingComment }] =
+    useInnovationsCommentsCreateMutation();
+  const {
+    data: commentData,
+    isLoading: isGettingComment,
+    error: errorGettingComments,
+  } = useInnovationsCommentsListQuery({ id: id, page: currentPage });
+  console.log(commentData);
+  // extracting comments  from the request
+  const {
+    results: comments,
+    next: nextCommentPage,
+    previous: previousCommentPage,
+    count: totalComments,
+  } = commentData || {};
 
-	// * handling pagination
-	const totalPages =
-		totalComments && Math.ceil(totalComments / commentsPerPage);
-	const handlePrevious = () => {
-		if (currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-		}
-	};
+  // * handling pagination
+  const totalPages =
+    totalComments && Math.ceil(totalComments / commentsPerPage);
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
-	const handleNext = () => {
-		if (totalPages && currentPage < totalPages) {
-			setCurrentPage(currentPage + 1);
-		}
-	};
-	//initialize toast
-	const { toast } = useToast();
-	//Function that handles submision of validated data
-	const onSubmit = async (data: TComment) => {
-		// useInnovationsCommentsDeleteMutation
-		// useInnovationsCommentsUpdatePatchMutation
-		// useInnovationsCommentsUpdatePutMutation
-		// useInnovationsCommentsReadQuery
+  const handleNext = () => {
+    if (totalPages && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  //initialize toast
+  const { toast } = useToast();
+  //Function that handles submision of validated data
+  const onSubmit = async (data: TComment) => {
+    // useInnovationsCommentsDeleteMutation
+    // useInnovationsCommentsUpdatePatchMutation
+    // useInnovationsCommentsUpdatePutMutation
+    // useInnovationsCommentsReadQuery
 
-		// Submit the data to your API or perform any other action
-		createComment({ id, ...data })
-			.unwrap()
-			.then((response) => {
-				// toast created successfully
-				toast({
-					title: "Comments submitted successfully",
-				});
-				console.log("Response: ", response);
-				form.reset({ message: "" });
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
+    // Submit the data to your API or perform any other action
+    createComment({ id, ...data })
+      .unwrap()
+      .then((response) => {
+        // toast created successfully
+        toast({
+          title: "Comments submitted successfully",
+        });
+        console.log("Response: ", response);
+        form.reset({ message: "" });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-	return isGettingInnovation || isGettingComment ? (
-		<div>Loading...</div>
-	) : errorGettingInnovation || errorGettingComments ? (
-		<div>Something went wrong</div>
-	) : (
-		<main>
-			<section className="flex flex-col">
-				<div className="flex justify-between items-center p-4">
-					<h2 className="font-semibold text-3xl">{innovation?.title}</h2>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<div className="hover:bg-accent rounded-full p-1">
-								<EllipsisVertical />
-							</div>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56">
-							<DropdownMenuItem>
-								<SquarePen className="mr-2 h-4 w-4" />
-								{/* TODO: URL generator */}
-								<Link href={`/dashboard/innovation/edit/${id}`}>
-									<span>Edit</span>
-								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem className="hover:bg-destructive active:bg-destructive focus:bg-destructive hover:text-white active:text-white focus:text-white">
-								<Trash2 className="mr-2 h-4 w-4" />
-								<span>Delete</span>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
 
-				<p className="px-4 ">{innovation?.description}</p>
-				<div className="flex items-center justify-between mt-5 px-4 ">
-					<div className="flex items-center gap-3">
-						<Avatar className="h-12 w-12">
-							<AvatarImage src={innovation?.author.profile_picture} />
-							<AvatarFallback className="p-2">
-								{get_fallback_name(
-									innovation?.author.first_name,
-									innovation?.author.last_name
-								)}
-							</AvatarFallback>
-						</Avatar>
-						<div>
-							<p>{`${innovation?.author.first_name} ${innovation?.author.last_name}`}</p>
-							<p className="text-sm">{innovation?.author.email}</p>
-						</div>
-					</div>
+  const supersetUrl = "http://localhost:8088";
+  const supersetApiUrl = supersetUrl + "/api/v1/security";
+  const dashboardId = "795981b3-a645-425b-a9ea-fe8970bc30dd";
+  let supersetData: { access_token: string, refresh_token: string };
 
-					<div className="flex gap-2 md:gap-4">
-						{innovation?.dashboard_link && (
-							<Link href={innovation?.dashboard_link || ""}>
-								<Button className="rounded-full md:px-9"> Visit </Button>
-							</Link>
-						)}
-						{innovation?.dashboard_definitions && (
-							<Link download href={innovation.dashboard_definitions}>
-								<Button className="rounded-full" variant={"outline"}>
-									Download Datasets
-								</Button>
-							</Link>
-						)}
-					</div>
-				</div>
-				<div className="flex p-4 my-2 justify-between bg-accent">
-					<div className="flex gap-3">
-						<span
-							className="flex"
-							onClick={innovation?.is_liked ? handleUnlike : handleLike}
-						>
-							{innovation?.is_liked ? (
-								<Heart className="fill-red-500" />
-							) : (
-								<Heart className="hover:fill-red-500" />
-							)}{" "}
-							{innovation?.likes_number}
-						</span>
-						<span className="flex">
-							<MessageCircle /> {innovation?.comments_number}{" "}
-						</span>
-					</div>
-					<span
-						className="flex"
-						onClick={
-							innovation?.is_bookmarked ? handleUnbookmark : handleBookmark
-						}
-					>
-						{innovation?.is_bookmarked ? (
-							<Bookmark className="fill-green-600" />
-						) : (
-							<Bookmark />
-						)}
-					</span>
-				</div>
-			</section>
-			<section>
-				{innovation?.dashboard_image ? (
-					<Image
-						alt="Innovation Image"
-						width={500}
-						height={600}
-						src={innovation?.dashboard_image}
-					/>
-				) : (
-					<></>
-				)}
-			</section>
+  const dashboardRef = useRef(null);
+  async function fetchGuestTokenFromBackend() {
+    const access_token = await getToken()
+    // Calling guest token
+    const guest_token_body = {
+      resources: [
+        {
+          type: "dashboard",
+          id: dashboardId,
+        },
+      ],
+      rls: [],
+      user: {
+        username: "guest",
+        first_name: "Guest",
+        last_name: "User",
+      },
+    };
 
-			<section className="px-6 pb-4">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-						<FormField
-							control={form.control}
-							name="message"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Comment</FormLabel>
-									<FormControl>
-										<Textarea placeholder="Type comment here..." {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<Button
-							className="rounded-full"
-							type="submit"
-							size={"lg"}
-							disabled={isCreatingComment}
-						>
-							Submit
-						</Button>
-					</form>
-				</Form>
-			</section>
-			{/* Comments container */}
-			<section className="p-7 space-y-4">
-				{comments?.map((comment, index) => (
-					<div className="border p-3 rounded-lg shadow-md" key={index}>
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-3">
-								<Avatar className="h-12 w-12">
-									<AvatarImage src={comment.author.profile_picture} />
-									<AvatarFallback className="p-2">
-										{get_fallback_name(
-											innovation?.author.first_name,
-											innovation?.author.last_name
-										)}
-									</AvatarFallback>
-								</Avatar>
-								<div>
-									<p>
-										{comment.author.first_name} {comment.author.last_name}
-									</p>
-									<p className="text-sm">{comment.author.email}</p>
-								</div>
-							</div>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<div className="hover:bg-accent rounded-full p-1">
-										<EllipsisVertical />
-									</div>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="w-56">
-									{/* <DropdownMenuItem>
+    const guest_token_headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + access_token,
+      },
+    }; console.log("Access token ", access_token)
+
+    console.log(supersetApiUrl + '/guest_token/')
+    console.log(guest_token_body)
+    console.log(guest_token_headers)
+    return await axios.post(supersetApiUrl + '/guest_token/', guest_token_body, guest_token_headers)
+      .then(dt => {
+        console.log("guestToken: ", dt.data['token'])
+        return dt.data['token']
+      })
+      .catch(error => console.log(error))
+  }
+
+
+  async function getToken() {
+    //calling login to get access token
+    const login_body = {
+      password: "1",
+      provider: "db",
+      refresh: true,
+      username: "guest",
+    };
+
+    const login_headers = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log(supersetApiUrl + '/login')
+    const { data } = await axios.post(supersetApiUrl + '/login', login_body, login_headers)
+    const access_token = data['access_token']
+    return access_token
+
+  }
+
+
+  // console.log("ref: ", dashboardRef.current)
+  // if (dashboardRef.current !== null) {
+  //   console.log("embeding")
+  //   embed()
+  // } else {
+  //   console.log("Not embeding")
+  // }
+  useEffect(() => {
+    const embed = async () => {
+      embedDashboard({
+        id: dashboardId,  // given by the Superset embedding UI
+        supersetDomain: supersetUrl,
+        mountPoint: document.getElementById("superset-container"), // html element in which iframe render
+        fetchGuestToken: () => fetchGuestTokenFromBackend(),
+        dashboardUiConfig: {
+          hideTitle: false,
+          hideChartControls: true,
+          hideTab: true,
+          filters: {
+            expanded: true,
+          },
+        }
+      });
+    }
+    console.log("ref: ", dashboardRef.current)
+    if (dashboardRef.current !== null) {
+      console.log("embeding")
+      embed()
+
+      const iframe = document.querySelector("iframe")
+      console.log(iframe);
+
+      if (iframe) {
+        iframe.style.width = '100%'; // Set the width as needed
+        iframe.style.minHeight = '70vw'; // Set the height as needed
+        iframe.style.overflow = 'hidden'
+        iframe.style.border = "0"
+      }
+    } else {
+      console.log("Not embeding")
+    }
+  }, [fetchGuestTokenFromBackend, getToken])
+
+  return isGettingInnovation || isGettingComment ? (
+    <div>Loading...</div>
+  ) : errorGettingInnovation || errorGettingComments ? (
+    <div>Something went wrong</div>
+  ) : (
+    <main>
+      <section className="flex flex-col">
+        <div className="flex justify-between items-center p-4">
+          <h2 className="font-semibold text-3xl">{innovation?.title}</h2>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="hover:bg-accent rounded-full p-1">
+                <EllipsisVertical />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem>
+                <SquarePen className="mr-2 h-4 w-4" />
+                {/* TODO: URL generator */}
+                <Link href={`/dashboard/innovation/edit/${id}`}>
+                  <span>Edit</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-destructive active:bg-destructive focus:bg-destructive hover:text-white active:text-white focus:text-white">
+                <Trash2 className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <p className="px-4 ">{innovation?.description}</p>
+        <div className="flex items-center justify-between mt-5 px-4 ">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={innovation?.author.profile_picture} />
+              <AvatarFallback className="p-2">
+                {get_fallback_name(
+                  innovation?.author.first_name,
+                  innovation?.author.last_name
+                )}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p>{`${innovation?.author.first_name} ${innovation?.author.last_name}`}</p>
+              <p className="text-sm">{innovation?.author.email}</p>
+            </div>
+          </div>
+
+          <div className="flex gap-2 md:gap-4">
+            {innovation?.dashboard_link && (
+              <Link href={innovation?.dashboard_link || ""}>
+                <Button className="rounded-full md:px-9"> Visit </Button>
+              </Link>
+            )}
+            {innovation?.dashboard_definitions && (
+              <Link download href={innovation.dashboard_definitions}>
+                <Button className="rounded-full" variant={"outline"}>
+                  Download Datasets
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+        <div className="flex p-4 my-2 justify-between bg-accent">
+          <div className="flex gap-3">
+            <span
+              className="flex"
+              onClick={innovation?.is_liked ? handleUnlike : handleLike}
+            >
+              {innovation?.is_liked ? (
+                <Heart className="fill-red-500" />
+              ) : (
+                <Heart className="hover:fill-red-500" />
+              )}{" "}
+              {innovation?.likes_number}
+            </span>
+            <span className="flex">
+              <MessageCircle /> {innovation?.comments_number}{" "}
+            </span>
+          </div>
+          <span
+            className="flex"
+            onClick={
+              innovation?.is_bookmarked ? handleUnbookmark : handleBookmark
+            }
+          >
+            {innovation?.is_bookmarked ? (
+              <Bookmark className="fill-green-600" />
+            ) : (
+              <Bookmark />
+            )}
+          </span>
+        </div>
+      </section>
+      <section>
+        {/* TODO: Dashboard display */}
+        <div id="superset-container" ref={dashboardRef} className="w-full">
+        </div>
+
+        {innovation?.dashboard_image ? (
+          <Image
+            alt="Innovation Image"
+            width={500}
+            height={600}
+            src={innovation?.dashboard_image}
+          />
+        ) : (
+          <></>
+        )}
+      </section>
+
+      <section className="px-6 pb-4">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Type comment here..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="rounded-full"
+              type="submit"
+              size={"lg"}
+              disabled={isCreatingComment}
+            >
+              Submit
+            </Button>
+          </form>
+        </Form>
+      </section>
+      {/* Comments container */}
+      <section className="p-7 space-y-4">
+        {comments?.map((comment, index) => (
+          <div className="border p-3 rounded-lg shadow-md" key={index}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={comment.author.profile_picture} />
+                  <AvatarFallback className="p-2">
+                    {get_fallback_name(
+                      innovation?.author.first_name,
+                      innovation?.author.last_name
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p>
+                    {comment.author.first_name} {comment.author.last_name}
+                  </p>
+                  <p className="text-sm">{comment.author.email}</p>
+                </div>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="hover:bg-accent rounded-full p-1">
+                    <EllipsisVertical />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  {/* <DropdownMenuItem>
 										<SquarePen className="mr-2 h-4 w-4" />
 										// TODO: Comment Editing
 										<Link href={""}>
 											<span>Edit</span>
 										</Link>
 									</DropdownMenuItem> */}
-									<DropdownMenuItem className="hover:bg-destructive active:bg-destructive focus:bg-destructive hover:text-white active:text-white focus:text-white">
-										<Trash2 className="mr-2 h-4 w-4" />
-										<span>Delete</span>
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
-						<Separator className="my-3" />
-						<p>{comment.text}</p>
-					</div>
-				))}
-				<PaginationDemo
-					currentPage={currentPage}
-					totalPages={totalPages ?? 0}
-					onPrevious={handlePrevious}
-					onNext={handleNext}
-				/>
-			</section>
-		</main>
-	);
+                  <DropdownMenuItem className="hover:bg-destructive active:bg-destructive focus:bg-destructive hover:text-white active:text-white focus:text-white">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <Separator className="my-3" />
+            <p>{comment.text}</p>
+          </div>
+        ))}
+        <PaginationDemo
+          currentPage={currentPage}
+          totalPages={totalPages ?? 0}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
+      </section>
+    </main>
+  );
 };
 
 export default InnovationDetailPage;
