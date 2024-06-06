@@ -14,7 +14,7 @@ interface TInnovation {
 	dashboard_link: string;
 	dashboard_image: string;
 	dashboard_definitions: string;
-	dashboard_id: string;
+	// dashboard_id: string;
 	// banner_image: string;
 	comments_number: number;
 	likes_number: number;
@@ -24,6 +24,7 @@ interface TInnovation {
 	is_bookmarked: boolean;
 	status: string;
 	dashboard_type: string;
+	embed_id: string;
 	// category: string;
 }
 

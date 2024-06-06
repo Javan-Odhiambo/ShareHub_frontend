@@ -65,7 +65,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
       
       container && embedDashboard({
         // TODO: Add embed ID
-        id: dashboardId,  // given by the Superset embedding UI
+        id: innovation?.embed_id,  // given by the Superset embedding UI
         supersetDomain: supersetUrl,
         mountPoint: container, // html element in which iframe render
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
