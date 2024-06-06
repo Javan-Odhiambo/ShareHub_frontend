@@ -6,8 +6,8 @@ import { get_fallback_name } from "@/lib/utils";
 type CustomAvatarProps = {
   className?: string;
   image_url?: string;
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
 };
 const CustomAvatar = ({
   className,

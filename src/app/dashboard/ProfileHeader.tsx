@@ -11,6 +11,8 @@ const ProfileHeader = () => {
 	return (
 		<Header
 			avatarUrl={profile?.profile_picture}
+			firstName={profile?.first_name}
+			lastName={profile?.last_name}
 			handleLogoutClick={handleLogout}
 			handleEditClick={() => {
 				router.push("/dashboard/my-profile/edit");
