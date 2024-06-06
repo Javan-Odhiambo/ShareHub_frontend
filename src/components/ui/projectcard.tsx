@@ -84,7 +84,8 @@ interface CardProps {
 	comments_count: number;
 	is_liked: boolean;
 	is_bookmarked: boolean;
-	status: "D" | "P"
+	status?: "D" | "P",
+	innerRef?: React.Ref<HTMLDivElement>;
 }
 
 const ProjectCard = ({
@@ -99,7 +100,8 @@ const ProjectCard = ({
 	comments_count,
 	is_liked = false,
 	is_bookmarked = false,
-	status
+	status,
+	innerRef,
 }: CardProps) => {
 	const innovationId = extractIdFromUrl(innovation_url) as string;
 
@@ -186,7 +188,7 @@ const ProjectCard = ({
 	}
 
 	return (
-		<Card className="max-w-[500px]">
+		<Card className="max-w-[500px]" ref={innerRef}>
 			<div className="p-0 mx-6 flex justify-between items-center">
 				<div className="flex items-center gap-2 mt-2">
 					<CustomAvatar image_url={author_avator_image_url} first_name={author_first_name} last_name={author_last_name}></CustomAvatar>
