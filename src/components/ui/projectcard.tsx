@@ -68,6 +68,7 @@ import {
 } from "@/redux/features/innovations/innovationsApiSlice";
 import { extractIdFromUrl } from "@/utils/ExtractIdFromUrl";
 import { useRouter } from "next/navigation";
+import CustomAvatar from "./custom-avatar";
 
 
 // * interface for project card props
@@ -188,10 +189,7 @@ const ProjectCard = ({
 		<Card className="max-w-[500px]">
 			<div className="p-0 mx-6 flex justify-between items-center">
 				<div className="flex items-center gap-2 mt-2">
-					<Avatar>
-						<AvatarImage src={author_avator_image_url} alt="@shadcn" />
-						<AvatarFallback>CN</AvatarFallback>
-					</Avatar>
+					<CustomAvatar image_url={author_avator_image_url} first_name={author_first_name} last_name={author_last_name}></CustomAvatar>
 					<Link href="/dashboard">
 						{author_first_name} {author_last_name}
 					</Link>
