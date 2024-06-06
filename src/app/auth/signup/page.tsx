@@ -79,6 +79,7 @@ const SignUpPage = () => {
 				toast({
 					title: "Registered successfully",
 					description: "Check your email to activate your account",
+					duration:10000,
 				});
 			})
 			.catch((error) => {
