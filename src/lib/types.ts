@@ -22,7 +22,7 @@ interface TInnovation {
 	updated_at: string;
 	is_liked: boolean;
 	is_bookmarked: boolean;
-	status: string;
+	status: "D" | "P";
 	dashboard_type: string;
 	embed_id: string;
 	// category: string;

@@ -21,6 +21,7 @@ const BookmarkPage = () => {
 								author_avator_image_url={
 									user.profile_picture || "/profile-svgrepo-com.svg"
 								}
+								author_email={user.email}
 								author_first_name={user.first_name}
 								author_last_name={user.last_name}
 								project_title={innovation.title}
@@ -30,6 +31,7 @@ const BookmarkPage = () => {
 								comments_count={innovation.comments_number}
 								is_liked={innovation.is_liked}
 								is_bookmarked={innovation.is_bookmarked}
+								status={innovation.status}
 							/>
 						);
 					})
