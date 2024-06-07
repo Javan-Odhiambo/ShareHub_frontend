@@ -12,6 +12,7 @@ import {
     ShoppingCart,
     Users,
     Bookmark,
+    SquarePen,
     Plus
 } from "lucide-react"
 
@@ -40,6 +41,7 @@ const SidebarNav = () => {
         },
         {
             href: "/dashboard/innovation/drafts",
+            icon: SquarePen,
             label: "Drafts"
         }
     ]
