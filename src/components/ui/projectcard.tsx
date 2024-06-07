@@ -42,6 +42,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import dashboard_default from "/public/dashboard_default.jpg"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import Image from "next/image";
@@ -172,17 +173,17 @@ const ProjectCard = ({
 
 	const handlePublish = () => {
 		publishInnovation(innovationId)
-		.unwrap()
-		.then(() => {
-			toast({
-				title:"Project published successfully"
+			.unwrap()
+			.then(() => {
+				toast({
+					title: "Project published successfully"
+				})
 			})
-		})
-		.catch((error) => {
-			toast({
-				title: "Something went wrong"
+			.catch((error) => {
+				toast({
+					title: "Something went wrong"
+				})
 			})
-		})
 	}
 
 	return (
@@ -290,18 +291,29 @@ const ProjectCard = ({
 			</div>
 			<CardContent className="pb-0">
 				<div className="flex  flex-col justify-between gap-5">
-					<div className="flex-1">
-						<Image
-							loader={() => dashboard_image_url}
-							src="/Image Icon.png"
-							width={450}
-							height={150}
-							alt="Dashboard image"
-							objectFit="contain"
-							className=""
-						/>
+					<div className="flex-1 mt-3">
+						{dashboard_image_url ?
+							<Image
+								loader={() => dashboard_image_url}
+								src="/Image Icon.png"
+								width={450}
+								height={150}
+								alt="Dashboard image"
+								objectFit="contain"
+								className=""
+							/>
+							:
+							<Image
+								src={dashboard_default}
+								width={450}
+								height={150}
+								alt="Dashboard image"
+								objectFit="contain"
+								className=""
+							/>
+						}
 					</div>
-					<div className="flex flex-col gap-3 flex-1">
+					<div className="flex flex-col gap-3 flex-1 my-3">
 						<h2 className="text-xl font-semibold">{project_title}</h2>
 						<CardDescription className="max-w-[400px]">
 							{project_description}

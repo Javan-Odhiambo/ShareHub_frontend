@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import SidebarNav from '@/components/sidebarNav'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import CustomAvatar from './ui/custom-avatar'
+import { get_fallback_name } from '@/lib/utils'
 
 interface headerProps {
 
@@ -30,7 +31,7 @@ interface headerProps {
 
 }
 
-const Header = ({ avatarUrl, firstName, lastName ,handleLogoutClick, handleEditClick } : headerProps ) => {
+const Header = ({ avatarUrl, firstName, lastName, handleLogoutClick, handleEditClick }: headerProps) => {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -62,7 +63,12 @@ const Header = ({ avatarUrl, firstName, lastName ,handleLogoutClick, handleEditC
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-        <CustomAvatar image_url={avatarUrl} first_name={firstName} last_name={lastName}></CustomAvatar>
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback className="p-2">
+              {get_fallback_name(firstName, lastName)}
+            </AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

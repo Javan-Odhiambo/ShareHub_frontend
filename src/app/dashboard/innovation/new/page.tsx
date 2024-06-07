@@ -184,7 +184,6 @@ const InnovationPage = () => {
 										<SelectItem value="S">Superset</SelectItem>
 										<SelectItem value="M">Metabase</SelectItem>
 										<SelectItem value="P">Power BI</SelectItem>
-										<SelectItem value="O">Other</SelectItem>
 									</SelectContent>
 								</Select>
 								<FormDescription></FormDescription>

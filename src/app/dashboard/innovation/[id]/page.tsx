@@ -30,6 +30,7 @@ import CommentsContainer from "@/components/commentsContainer";
 import CommentsForm from "@/components/commentsForm";
 import CustomAvatar from "@/components/ui/custom-avatar";
 import SupersetEmbed from "@/components/supersetEmbed";
+import MetabaseEmbed from "@/components/metabaseEmbed";
 
 
 type InnovationDetailPageProps = {
@@ -146,7 +147,11 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
       </section>
       <section>
         {/* Superset Dashboard display */}
+      { innovation?.dashboard_type === "S" ?
         <SupersetEmbed embed_id={innovation?.embed_id} />
+        :
+      <MetabaseEmbed metabase_url={innovation?.dashboard_link} />
+      }
 
       </section>
       {/* Comments Form */}

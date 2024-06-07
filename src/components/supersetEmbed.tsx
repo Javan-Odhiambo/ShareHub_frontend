@@ -33,8 +33,8 @@ const SupersetEmbed = ({ embed_id }: { embed_id?: string }) => {
             console.log(iframe);
 
             if (iframe) {
-                iframe.style.width = '100%'; // Set the width as needed
-                iframe.style.minHeight = '70vw'; // Set the height as needed
+                iframe.style.width = '80%'; // Set the width as needed
+                iframe.style.minHeight = '80vw'; // Set the height as needed
                 iframe.style.overflow = 'hidden'
                 iframe.style.border = "0"
             }
