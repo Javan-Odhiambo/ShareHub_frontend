@@ -26,12 +26,13 @@ interface headerProps {
   avatarUrl?: string;
   firstName?: string;
   lastName?: string;
+  email?: string;
   handleLogoutClick?: () => void;
   handleEditClick?: () => void;
 
 }
 
-const Header = ({ avatarUrl, firstName, lastName, handleLogoutClick, handleEditClick }: headerProps) => {
+const Header = ({ avatarUrl, firstName, lastName, email, handleLogoutClick, handleEditClick }: headerProps) => {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -66,7 +67,7 @@ const Header = ({ avatarUrl, firstName, lastName, handleLogoutClick, handleEditC
         <Avatar className="h-10 w-10">
       <AvatarImage src={avatarUrl} />
       <AvatarFallback className="p-2">
-        {get_fallback_name(firstName, lastName)}
+        {get_fallback_name(firstName, lastName, email)}
       </AvatarFallback>
     </Avatar>
         </DropdownMenuTrigger>

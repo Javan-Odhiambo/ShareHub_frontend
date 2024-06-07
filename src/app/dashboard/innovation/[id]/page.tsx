@@ -133,7 +133,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
         <div className="flex items-center justify-between mt-5 px-4 ">
           <div className="flex items-center gap-3">
 
-          <CustomAvatar image_url={innovation?.author.profile_picture} first_name={innovation?.author.first_name} last_name={innovation?.author.last_name}></CustomAvatar>
+          <CustomAvatar image_url={innovation?.author.profile_picture} first_name={innovation?.author.first_name} last_name={innovation?.author.last_name} email={innovation?.author.email}></CustomAvatar>
             <div>
               <p>{`${innovation?.author.first_name} ${innovation?.author.last_name}`}</p>
               <p className="text-sm">{innovation?.author.email}</p>
