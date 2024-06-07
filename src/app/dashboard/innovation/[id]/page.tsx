@@ -25,12 +25,11 @@ import {
   useLikeInnovation,
   useUnbookmarkInnovation,
   useUnlikeInnovation,
-} from "@/lib/hooks";
-import { embedDashboard } from "@superset-ui/embedded-sdk";
-import { dashboardId, fetchGuestTokenFromBackend, getToken, supersetUrl } from "@/utils/embedSuperset";
+} from "@/lib/hooks"; 
 import CommentsContainer from "@/components/commentsContainer";
 import CommentsForm from "@/components/commentsForm";
 import CustomAvatar from "@/components/ui/custom-avatar";
+import SupersetEmbed from "@/components/supersetEmbed";
 
 
 type InnovationDetailPageProps = {
@@ -38,8 +37,6 @@ type InnovationDetailPageProps = {
     id: string;
   };
 };
-
-
 
 const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
   const { id } = params;
@@ -57,46 +54,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
     error: errorGettingInnovation,
   } = useInnovationsFetchOneQuery(id);
 
-  const dashboardRef = useRef(null);
 
-  useEffect(() => {
-    const embedSuperset = async () => {
-      const container = document.getElementById("superset-container")
-      
-      container && embedDashboard({
-        // TODO: Add embed ID
-        id: innovation?.embed_id,  // given by the Superset embedding UI
-        supersetDomain: supersetUrl,
-        mountPoint: container, // html element in which iframe render
-        fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: {
-          hideTitle: false,
-          hideChartControls: true,
-          hideTab: true,
-          filters: {
-            expanded: true,
-          },
-        }
-      });
-    }
-    console.log("ref: ", dashboardRef.current)
-    if (dashboardRef.current !== null) {
-      console.log("embeding")
-      embedSuperset()
-
-      const iframe = document.querySelector("iframe")
-      console.log(iframe);
-
-      if (iframe) {
-        iframe.style.width = '100%'; // Set the width as needed
-        iframe.style.minHeight = '70vw'; // Set the height as needed
-        iframe.style.overflow = 'hidden'
-        iframe.style.border = "0"
-      }
-    } else {
-      console.log("Not embeding")
-    }
-  }, [fetchGuestTokenFromBackend, getToken])
 
   return isGettingInnovation ? (
     <div>Loading...</div>
@@ -188,8 +146,7 @@ const InnovationDetailPage = ({ params }: InnovationDetailPageProps) => {
       </section>
       <section>
         {/* Superset Dashboard display */}
-        <div id="superset-container" ref={dashboardRef} className="w-full">
-        </div>
+        <SupersetEmbed embed_id={innovation?.embed_id} />
 
       </section>
       {/* Comments Form */}
