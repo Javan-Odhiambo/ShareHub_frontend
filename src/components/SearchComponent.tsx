@@ -90,6 +90,7 @@ function SearchComponent({
 										author_avator_image_url={innovation.author.profile_picture}
 										author_first_name={innovation.author.first_name}
 										author_last_name={innovation.author.last_name}
+										author_email={innovation.author.email}
 										project_title={innovation.title}
 										project_description={innovation.description}
 										dashboard_image_url={innovation.dashboard_image}
@@ -97,6 +98,7 @@ function SearchComponent({
 										comments_count={innovation.comments_number}
 										is_liked={innovation.is_liked}
 										is_bookmarked={innovation.is_bookmarked}
+										status={innovation.status}
 									/>
 								)
 							)}

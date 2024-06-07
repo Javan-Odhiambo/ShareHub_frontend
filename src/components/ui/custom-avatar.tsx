@@ -8,18 +8,20 @@ type CustomAvatarProps = {
   image_url?: string;
   first_name?: string;
   last_name?: string;
+  email?: string;
 };
 const CustomAvatar = ({
   className,
   image_url,
   first_name,
   last_name,
+  email,
 }: CustomAvatarProps) => {
   return (
     <Avatar className={cn("h-12 w-12", className)}>
       <AvatarImage src={image_url} />
       <AvatarFallback className="p-2">
-        {get_fallback_name(first_name, last_name)}
+        {get_fallback_name(first_name, last_name, email)}
       </AvatarFallback>
     </Avatar>
   );
